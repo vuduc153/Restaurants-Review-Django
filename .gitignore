@@ -2,6 +2,8 @@
 # Edit at https://www.gitignore.io/?templates=linux,django,python,pycharm
 
 ### Django ###
+*.css
+*.js
 *.jpg
 *.log
 *.pot

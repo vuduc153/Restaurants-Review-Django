@@ -9,6 +9,8 @@
 *.pot
 *.pyc
 __pycache__/
+static/
+templates/
 local_settings.py
 db.sqlite3
 media

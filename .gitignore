@@ -7,9 +7,9 @@
 *.pot
 *.pyc
 __pycache__/
-static/main/images/
-static/main/profile_pics/
-static/main/temp/
+images/
+profile_pics/
+temp/
 IT3290-master/
 Review Web App - Django/
 local_settings.py

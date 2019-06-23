@@ -10,7 +10,6 @@
 *.pyc
 __pycache__/
 static/
-templates/
 IT3290-master/
 Review Web App - Django/
 local_settings.py

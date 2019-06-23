@@ -1,0 +1,70 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,300'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,700,300'>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="{% static 'main/css/login-register.css' %}">
+	
+</head>
+
+<body>
+	<!-- Preloader -->
+	<div id="loading">
+		<div id="loading-center">
+			<div id="loading-center-absolute">
+				<div class="object"></div>
+				<div class="object"></div>
+				<div class="object"></div>
+				<div class="object"></div>
+				<div class="object"></div>
+				<div class="object"></div>
+				<div class="object"></div>
+				<div class="object"></div>
+				<div class="object"></div>
+				<div class="object"></div>
+			</div>
+		</div>
+	</div>
+	<!--End off Preloader -->
+	<div class="signup__container">
+	<div class="container__child signup__thumbnail">
+	</div>
+	<div class="container__child signup__form">
+		<form method="post">
+             {% csrf_token %}
+             {% for field in form %}
+             <div class="form-group" style="margin-bottom: 10px">
+				<label>{{ field.label_tag }}</label>
+				{{ field|add_class:"form-control" }}
+                 {% for error in field.errors %}
+                    <small style="color: red">{{ error }}</small>
+                 {% endfor %}
+             </div>
+             {% endfor %}
+			<div class="m-t-lg">
+				<ul class="list-inline">
+					<li>
+						<input class="btn btn--form" type="submit" name="submit" id="submit" value="Sign up" />
+					</li>
+					<li>
+						<a class="signup__link" href="{% url 'main:login' %}">Already a member?</a>
+					</li>
+				</ul>
+			</div>
+		</form>  
+	</div>
+</div>
+    <!-- JavaScript -->
+    <script src="{% static 'main/js/jquery-1.12.1.min.js' %}"></script>
+    <script src="{% static 'main/js/main.js' %}"></script>
+</body>
+
+</html>

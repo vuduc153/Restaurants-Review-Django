@@ -1,0 +1,114 @@
+.review-checkbox_wrap .review-checkbox h6 {
+	color: #737882;
+    font-size: 16px;
+    text-transform: none;
+}
+
+.item-label {
+	width: 150px;
+	float: left;
+	font-size: 14px;
+}
+
+.item-detail {
+	width: 510px;
+	float: left;
+	font-size: 14px;
+}
+
+.item-detail input {
+	border-radius: 2px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 4px 6px;
+    width: 410px;
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+}
+
+.item-detail select {
+	padding: 5px;
+	float: left;
+	border-radius: 2px;
+	width: 140px;
+}
+
+.info-input {
+	float: left;
+	width: 100%;
+	padding: 2px 0;
+	margin-bottom: 10px;
+}
+
+.info-content::after {
+	content: "";
+    display: table;
+    clear: both;
+}
+.add-meal-btn {
+	float: left;
+    margin: 0;
+    line-height: 20px;
+    position: relative;
+}
+
+.add-meal-btn button {
+    background: #eee;
+    border: 1px solid #eee;
+    color: #949497;
+    display: block;
+    font-size: 24px;
+    text-align: center;
+    margin-right: 10px;
+    font-weight: 400;
+    height: 30px;
+    width: 30px;
+    transition: all 0.4s ease;
+    -webkit-transition: all 0.4s ease;
+    -moz-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    -ms-transition: all 0.4s ease;
+}
+
+.add-meal-btn button:hover {
+    background: transparent;
+}
+
+textarea {
+    resize: none;
+    outline: none;
+}
+
+.btn.submit_btn {
+    background: #c0c0c3;
+    border: 1px solid #c0c0c3;
+    color: #fff;
+    font-family: "futura_ltbold",sans-serif;
+    font-size: 16px;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    border-radius: 4px;
+    width: 20%;
+    margin-left: 40%;
+    transition: all 0.4s ease;
+    -webkit-transition: all 0.4s ease;
+    -moz-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    -ms-transition: all 0.4s ease;
+}
+.btn.submit_btn:hover,
+.btn.submit_btn:focus {
+    background: transparent;
+    color: #949497;
+}
+
+#image_preview img {
+    width: 25%;
+    height: auto;
+    max-height: 250px;
+    object-position: center;
+    object-fit: cover;
+    padding: 5px
+}

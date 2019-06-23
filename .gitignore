@@ -2,14 +2,14 @@
 # Edit at https://www.gitignore.io/?templates=linux,django,python,pycharm
 
 ### Django ###
-*.css
-*.js
 *.jpg
 *.log
 *.pot
 *.pyc
 __pycache__/
-static/
+static/images/
+static/profile_pics/
+static/temp/
 IT3290-master/
 Review Web App - Django/
 local_settings.py

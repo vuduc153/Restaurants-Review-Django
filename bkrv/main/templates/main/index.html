@@ -185,35 +185,23 @@
 									        cate.Selected = false;
 									        });
 									    };
-									    $scope.selDistrict = 0;
-									    $scope.selPrice = 0;
-									    $scope.selCate = 0;
 									    $scope.sel = {};
 									    $scope.search = function() {
 									    	$scope.selDistrictArray = [];
 									    	angular.forEach($scope.Districts, function(district) {
-									    		if(district.Selected == true) {
-									    			$scope.selDistrict = $scope.selDistrict + 1;
+									    		if(district.Selected == true)
 									    			$scope.selDistrictArray.push(district.Name);
-									    		}
 									    	});
 									    	$scope.selPriceArray = [];
 									    	angular.forEach($scope.Prices, function(price) {
-									    		if(price.Selected == true) {
-									    			$scope.selPrice = $scope.selPrice + 1;
+									    		if(price.Selected == true)
 									    			$scope.selPriceArray.push(price.Name);
-									    		}
 									    	});
 									    	$scope.selCateArray = [];
 									    	angular.forEach($scope.Cates, function(cate) {
-									    		if(cate.Selected == true) {
-									    			$scope.selCate = $scope.selCate + 1;
+									    		if(cate.Selected == true)
 									    			$scope.selCateArray.push(cate.Name);
-									    		}
 									    	});
-									    	$scope.sel['nd'] = $scope.selDistrict;
-									    	$scope.sel['np'] = $scope.selPrice;
-									    	$scope.sel['nc'] = $scope.selCate;
 									    	$scope.sel['sd'] = $scope.selDistrictArray;
 									    	$scope.sel['sp'] = $scope.selPriceArray;
 									    	$scope.sel['sc'] = $scope.selCateArray;

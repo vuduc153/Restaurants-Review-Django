@@ -34,8 +34,30 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def min_price(self):
+        _min = 10000000
+        for item in self.restaurantitem_set.all():
+            if item.price < _min:
+                _min = item.price
+        return format(_min, ',').replace(',', '.')
+
+    @property
+    def max_price(self):
+        _max = 0
+        for item in self.restaurantitem_set.all():
+            if item.price > _max:
+                _max = item.price
+        return format(_max, ',').replace(',', '.')
+
+
+def profile_picture_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/users/<username>/<filename>
+    return 'users/{}/{}'.format(instance.username, filename)
+
 
 class CustomUser(AbstractUser):
+    picture = models.ImageField(upload_to=profile_picture_path, default='users/default_avatar.jpg')
 
     def __str__(self):
         return self.username
@@ -45,6 +67,7 @@ class Review(models.Model):
     review = models.TextField()
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
+    rating = models.IntegerField(default=0)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 

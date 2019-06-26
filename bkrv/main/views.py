@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.http import Http404
+
 from .forms import CustomUserCreationForm
 from .models import Review
-from django.http import Http404
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
 from django.views.generic.list import ListView
+from .utils import get_price_range
 
 
 def index(request):
@@ -47,17 +49,30 @@ class ResultListView(ListView):
                 return base_query
 
         # request sent from search filter
-        elif 'sd' in self.request.GET or 'sp' in self.request.GET or 'sc' in self.request.GET:
+        elif 'sd[]' in self.request.GET or 'sp[]' in self.request.GET or 'sc[]' in self.request.GET:
             # area-based query
-            try:
-                query1 = base_query.filter(restaurant__district__in=self.request.GET.get('sd'))
-            except ValueError:  # no 'sd' is passed
-                query1 = base_query
+            if self.request.GET.getlist('sd[]'):
+                query1 = base_query.filter(restaurant__district__in=self.request.GET.getlist('sd[]')).distinct()
+            else:  # no 'sd' is passed
+                query1 = base_query.distinct()
             # type-based query
-            try:
-                query2 = base_query.filter(restaurant__type__in=self.request.GET.get('sc'))
-            except ValueError:  # no 'sc' is passed
-                query2 = base_query
+            if self.request.GET.getlist('sc[]'):
+                query2 = base_query.filter(restaurant__type__in=self.request.GET.getlist('sc[]')).distinct()
+            else:  # no 'sc' is passed
+                query2 = base_query.distinct()
+            # price-based query
+            if self.request.GET.getlist('sp[]'):
+                stack_query = Review.objects.none()
+                for params in self.request.GET.getlist('sp[]'):
+                    price_range = get_price_range(params)
+                    query = base_query.filter\
+                        (restaurant__restaurantitem__price__range=(price_range['low'], price_range['high'])).distinct()
+                    stack_query = stack_query | query
+                query3 = stack_query
+            else:  # no 'sp' is passed
+                query3 = base_query.distinct()
+            combined_query = query1 & query2 & query3
+            return combined_query
 
         # request sent from search filter with no item selected / invalid request
         else:

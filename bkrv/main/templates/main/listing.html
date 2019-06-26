@@ -1,3 +1,411 @@
-{% for result in result_list %}
-    {{ result }}
-{% endfor %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<!-- Mobile Specific Meta -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<!-- Custom Fonts -->
+		<link rel="stylesheet" href="{% static 'main/custom-font/fonts.css' %}" />
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}" />
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="{% static 'main/css/font-awesome.min.css' %}" />
+		<!-- Bootsnav -->
+		<link rel="stylesheet" href="{% static 'main/css/bootsnav.css' %}">
+		<!-- Custom stylesheet -->
+		<link rel="stylesheet" href="{% static 'main/css/listing-detail.css' %}" />
+		<!-- AngularJS -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<!-- Simple line Icon -->
+	    <link rel="stylesheet" href="{% static 'main/css/simple-line-icons.css' %}">
+	    <!-- Themify Icon -->
+	    <link rel="stylesheet" href="{% static 'main/css/themify-icons.css' %}">
+	</head>
+	<body>
+
+		<!-- Preloader -->
+
+		<div id="loading">
+			<div id="loading-center">
+				<div id="loading-center-absolute">
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+				</div>
+			</div>
+		</div>
+
+		<!--End off Preloader -->
+
+		<!-- Header -->
+		<header>
+			<!-- Navbar -->
+			<nav class="navbar bootsnav">
+				<div class="container">
+					<!-- Header Navigation -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+							<i class="fa fa-bars"></i>
+						</button>
+						<a class="navbar-brand" href=""><img class="logo" src="{% static 'main/images/logo.png' %}" alt="" style="height: 50px; width: 200px"></a>
+					</div>
+					<!-- Navigation -->
+					<div class="collapse navbar-collapse" id="navbar-menu">
+						<ul class="nav navbar-nav menu">
+							<li><a href="{% url 'main:index' %}">Home</a></li>
+                            {% if user.is_authenticated %}
+                            <li><a href="#">{{ user.username }}</a></li>
+                            <li><a href="{% url 'main:logout' %}">Logout</a></li>
+                            {% else %}
+							<li><a href="{% url 'main:login' %}">Login</a></li>
+							<li><a href="{% url 'main:register' %}">Register</a></li>
+                            {% endif %}
+						</ul>
+					</div>
+				</div>
+			</nav><!-- Navbar end -->
+		</header><!-- Header end -->
+
+
+		<section id="home" class="home">
+			<!-- Carousel -->
+			<div id="carousel" class="carousel slide" data-ride="carousel">
+				<!-- Carousel-inner -->
+				<div class="carousel-inner" role="listbox">
+					<div class="item active">
+						<img src="{% static 'main/images/listing-food.jpg' %}">
+						<div class="overlay" ng-app="myApp" ng-controller="myCtrl" ng-init="show='false'">
+							<form method="GET" action="{% url 'main:search' %}">
+								<div class="inner-form">
+									<div class="input-field first-wrap">
+										<input id="search" type="text" name="keyword" placeholder="Restaurant / Food / Address" />
+										<i class="fa fa-sliders" style="margin-top: 3px" ng-click="switchShow()"></i>
+								  	</div>
+								  	<div class="input-field third-wrap">
+										<button class="btn know_btn" type="submit">Search</button>
+								 	</div>
+								</div>
+							</form>
+							<!-- Advanced Search Bar -->
+							<div class="advance-search unselectable" ng-init="type='area'" ng-hide="show!='true'">
+								<div class="sf-left">
+									<ul class="sf-cate">
+										<li ng-click="changeType('area')">
+											<i class="fa fa-location-arrow"></i>
+											<label style="margin-bottom: 0px; margin-left: 3px;">Area</label>
+											<i class="fa fa-angle-right" style="float: right"></i>
+										</li>
+										<li ng-click="changeType('price')">
+											<i class="fa fa-bars"></i>
+											<label style="margin-bottom: 0px; margin-left: 3px;">Price range</label>
+											<i class="fa fa-angle-right" style="float: right"></i>
+										</li>
+										<li ng-click="changeType('category')">
+											<i class="fa fa-cutlery"></i>
+											<label style="margin-bottom: 0px; margin-left: 3px;	">Category</label>
+											<i class="fa fa-angle-right" style="float: right"></i>
+										</li>
+									</ul>
+								</div>
+								<script>
+									var app = angular.module('myApp', []);
+									app.controller('myCtrl', function($scope, $http) {
+										$scope.Districts = [{
+											Name: "Dong Da"
+											}, {
+											Name: "Hoan Kiem"
+											}, {
+											Name: "Ba Dinh"
+											}, {
+											Name: "Tay Ho"
+											}, {
+											Name: "Thanh Xuan"
+											}, {
+											Name: "Hai Ba Trung"
+											}, {
+											Name: "Cau Giay"
+											}, {
+											Name: "Hoang Mai"
+											}, {
+											Name: "Long Bien"
+											}, {
+											Name: "Ha Dong"
+											}, {
+											Name: "Nam Tu Liem"
+											}, {
+											Name: "Bac Tu Liem"
+										}];
+										$scope.Prices = [{
+											Name: "< 10.000"
+											}, {
+											Name: "10.000 - 50.000"
+											}, {
+											Name: "50.000 - 100.000"
+											}, {
+											Name: "100.000 - 200.000"
+											}, {
+											Name: "200.000 - 500.000"
+											}, {
+											Name: "> 500.000"
+										}];
+										$scope.Cates = [{
+											Name: "Restaurant"
+											}, {
+											Name: "Cafe - Dessert"
+											}, {
+											Name: "Snack"
+											}, {
+											Name: "Bar - Pub"
+										}];
+									    $scope.changeType = function($type) {
+									        $scope.type = $type;
+									    };
+									    $scope.switchShow = function() {
+									        if ($scope.show == 'true') {
+									            $scope.show = 'false';
+									        } else {
+									            $scope.show = 'true';
+									        }
+									    };
+									    $scope.clearFilter = function() {
+									    	angular.forEach($scope.Districts, function(district) {
+									        district.Selected = false;
+									        });
+									        angular.forEach($scope.Prices, function(price) {
+									        price.Selected = false;
+									        });
+									        angular.forEach($scope.Cates, function(cate) {
+									        cate.Selected = false;
+									        });
+									    };
+									    $scope.sel = {};
+									    $scope.search = function() {
+									    	$scope.selDistrictArray = [];
+									    	angular.forEach($scope.Districts, function(district) {
+									    		if(district.Selected == true)
+									    			$scope.selDistrictArray.push(district.Name);
+									    	});
+									    	$scope.selPriceArray = [];
+									    	angular.forEach($scope.Prices, function(price) {
+									    		if(price.Selected == true)
+									    			$scope.selPriceArray.push(price.Name);
+									    	});
+									    	$scope.selCateArray = [];
+									    	angular.forEach($scope.Cates, function(cate) {
+									    		if(cate.Selected == true)
+									    			$scope.selCateArray.push(cate.Name);
+									    	});
+									    	$scope.sel['sd'] = $scope.selDistrictArray;
+									    	$scope.sel['sp'] = $scope.selPriceArray;
+									    	$scope.sel['sc'] = $scope.selCateArray;
+									    	// console.log($.param($scope.sel));
+									    	// working //
+									    	window.location.href=({% url 'main:search' %} + '?' + $.param($scope.sel));
+									    };
+									});
+								</script>
+								<div class="sf-right">
+									<div class="sf-result" ng-hide="type!='area'">
+										<ul>
+											<li ng-repeat="district in Districts">
+												<label class="checkbox-container" style="font-family: arial">
+                                                    {% verbatim %}
+                                                    {{district.Name}}
+                                                    {% endverbatim %}
+													<input type="checkbox" ng-model="district.Selected">
+					  								<span class="checkmark"></span>
+												</label>
+											</li>
+										</ul>
+									</div>
+									<div class="sf-result" ng-hide="type!='price'">
+										<ul>
+											<li ng-repeat="price in Prices">
+												<label class="checkbox-container" style="font-family: arial">
+                                                    {% verbatim %}
+                                                    {{price.Name}}
+                                                    {% endverbatim %}
+													<input type="checkbox" ng-model="price.Selected">
+					  								<span class="checkmark"></span>
+												</label>
+											</li>
+										</ul>
+									</div>
+									<div class="sf-result" ng-hide="type!='category'">
+										<ul>
+											<li ng-repeat="cate in Cates">
+												<label class="checkbox-container" style="font-family: arial">
+                                                    {% verbatim %}
+                                                    {{cate.Name}}
+                                                    {% endverbatim %}
+													<input type="checkbox" ng-model="cate.Selected">
+					  								<span class="checkmark"></span>
+												</label>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<div class="sf-bottom">
+									<div class="sf-btns">
+										<a class="fd-btn" href="#" style="text-decoration:none;" ng-click="search()">Search</a>
+										<a class="fd-btn" href="#" style="text-decoration:none;" ng-click="clearFilter()">Clear</a>
+									</div>
+								</div>
+							</div>
+							<!-- Advanced Search Bar end -->
+						</div>
+					</div>
+				</div><!-- Carousel-inner end -->
+			</div><!-- Carousel end-->
+		</section>
+
+		<!--============================= FEATURED PLACES =============================-->
+	    <section class="main-block">
+	        <div class="container">
+	            <div class="row justify-content-center">
+	                <div class="col-md-5">
+	                    <div class="styled-heading">
+	                        <h3>Results</h3>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="row"> <!-- add new row for new content -->
+                    {% for object in result_list %}
+	                <div class="col-md-4 featured-responsive">
+	                    <div class="featured-place-wrap">
+	                        <a href="detail.html">
+	                            <img src="{{ user.picture.url }}" class="img-fluid" alt="#">
+	                            <span class="featured-rating-orange">{{ object.rating }}</span>
+	                            <div class="featured-title-box">
+	                                <h6 name="store_name">{{ object.restaurant.name }}</h6>
+	                                <p name="store_type">{{ object.restaurant.type }} </p> <span>• </span>
+	                                <p><span>$$$</span>$$</p> <!-- Based on price range -->
+	                                <ul>
+	                                    <li><span class="ti-location-pin"></span>
+	                                        <p name="store_address">{{ object.restaurant.address }}</p>
+	                                    </li>
+	                                    <li><span class="fa fa-tag minmaxpriceicon"></span>
+	                                        <p name="store_pricerange">{{ object.restaurant.min_price }}đ - {{ object.restaurant.max_price }}đ</p>
+	                                    </li>
+	                                    <li><span class="ti-time"></span>
+	                                        <p name="store_opening">{{ object.restaurant.time_open }} - {{ object.restaurant.time_close }}</p>
+	                                    </li>
+
+	                                </ul>
+	                                <div class="bottom-icons">
+	                                    <div class="closed-now">CLOSED NOW</div> <!-- Based on opening hour -->
+	                                    <span class="ti-heart"><span class="upvote display-number" name="store_point">10</span></span>
+	                                    <!-- Number of upvotes - number of downvotes -->
+	                                    <span class="ti-comments"><span class="comment display-number" name="no_comments">10</span></span>
+	                                </div>
+	                            </div>
+	                        </a>
+	                    </div>
+	                </div>
+                    {% endfor %}
+	            </div>
+	            <div class="row justify-content-center">
+	                <div class="col-md-4">
+	                    <div class="featured-btn-wrap">
+	                        <button class="btn know_btn" name="view_more">View more</button> <!-- load 3 each time -->
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </section>
+	    <!--//END FEATURED PLACES -->
+
+		<!-- Footer -->
+		<footer>
+			<!-- Footer top -->
+			<div class="container footer_top">
+				<div class="row">
+					<div class="col-lg-4 col-sm-7">
+						<div class="footer_item">
+							<h4>About Company</h4>
+							<img class="logo" src="{% static 'main/images/logo.png' %}" style="width: 200px; height: 50px" />
+							<p>Sản phẩm là quá trình sản sinh tri thức một cách khách quan và tự nguyện của một nhóm bạn trẻ SDL Đại Học Bách Khoa Hà Nội. Lấy ý tưởng từ phần mềm diệt virus BKAV, BKRV ra đời nhằm mục đích quảng bá món ăn Việt Nam đến với bạn bè Thế Giới.</p>
+
+							<ul class="list-inline footer_social_icon">
+								<li><a href=""><span class="fa fa-facebook"></span></a></li>
+								<li><a href=""><span class="fa fa-twitter"></span></a></li>
+								<li><a href=""><span class="fa fa-youtube"></span></a></li>
+								<li><a href=""><span class="fa fa-google-plus"></span></a></li>
+								<li><a href=""><span class="fa fa-linkedin"></span></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-2 col-sm-5">
+						<div class="footer_item">
+							<h4>Sponsers</h4>
+							<ul class="list-unstyled footer_menu">
+								<li><a href="https://www.facebook.com/cafetrasuathayphuong/"><span class="fa fa-play"></span> Citea FUN</a>
+								<li><a href="https://www.facebook.com/chienhedspi"><span class="fa fa-play"></span> TSCBSM Group</a>
+								<li><a href="https://www.facebook.com/vingroup.net/"><span class="fa fa-play"></span> Vin Group</a>
+								<li><a href="https://www.foody.vn/ha-noi"><span class="fa fa-play"></span> Foody.vn</a>
+								<li><a href="https://lala.vn/"><span class="fa fa-play"></span> LALA</a>
+								<li><a href="https://www.facebook.com/The.ThanosMadTitan"><span class="fa fa-play"></span> Thanos</a>
+								<li><a href="https://www.facebook.com/vuduc153"><span class="fa fa-play"></span> Spider MAN</a>
+								<li><a href="https://www.facebook.com/hedspi.nichibu/"><span class="fa fa-play"></span> Hedspi Nichibu</a>
+								<li><a href="https://www.facebook.com/JAV-Company-233850186650513/"><span class="fa fa-play"></span> JAV Company</a>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-7">
+						<div class="footer_item">
+							<h4>Don't read the lines below</h4>
+							<ul class="list-unstyled post">
+								<li><a href=""><span class="date">03 <small>MBR</small></span>  Project made by SDL Team<br/>with 3 members</a></li>
+								<li><a href=""><span class="date">02 <small>WRK</small></span>  Number of people really doing this project</a></li>
+								<li><a href=""><span class="date">01 <small>TER</small></span>  Takes 1 month of implementation</a></li>
+								<li><a href=""><span class="date">10 <small>DIM</small></span><b>  Số điểm mà nhóm mong muốn có được</b></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-5">
+						<div class="footer_item">
+							<h4>Come with us</h4>
+							<ul class="list-unstyled footer_contact">
+								<li><a href=""><span class="fa fa-map-marker"></span> 17 Ta Quang Buu , HBC HN VN</a></li>
+								<li><a href=""><span class="fa fa-envelope"></span> Email.Never.Read@gmail.com</a></li>
+								<li><a href=""><span class="fa fa-mobile"></span><p>+84 24 66 711 211 <br />+84 69 96 069 069</p></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div><!-- Footer top end -->
+
+			<!-- Footer bottom -->
+			<div class="footer_bottom text-center">
+				<p class="wow fadeInRight">
+					Made with
+					<i class="fa fa-heart"></i>
+					by
+					<a target="_blank" href="http://bootstrapthemes.co">Bootstrap Themes</a>
+					2016. All Rights Reserved
+				</p>
+			</div><!-- Footer bottom end -->
+		</footer><!-- Footer end -->
+
+		<!-- JavaScript -->
+		<script src="{% static 'main/js/jquery-1.12.1.min.js' %}"></script>
+		<script src="{% static 'main/js/bootstrap.min.js' %}"></script>
+
+
+		<!-- JS Implementing Plugins -->
+		<script src="{% static 'main/js/isotope.js' %}"></script>
+		<script src="{% static 'main/js/isotope-active.js' %}"></script>
+
+		<script src="{% static 'main/js/jquery.scrollUp.min.js' %}"></script>
+
+		<script src="{% static 'main/js/main.js' %}"></script>
+	</body>
+</html>

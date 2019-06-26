@@ -30,7 +30,7 @@ jQuery(document).ready(function ($) {
         if ($(this).scrollTop() > 600) {
             $('#scrollUp').fadeIn('slow');
         } else {
-            $('#scrollUp]').fadeOut('slow');
+            $('#scrollUp').fadeOut('slow');
         }
     });
 

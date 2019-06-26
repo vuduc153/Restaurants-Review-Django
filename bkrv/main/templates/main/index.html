@@ -82,14 +82,14 @@
 					<div class="item active">
 						<img src="{% static 'main/images/food.jpg' %}">
 						<div class="overlay" ng-app="myApp" ng-controller="myCtrl" ng-init="show='false'">
-							<form>
+							<form method="GET" action="{% url 'main:search' %}">
 								<div class="inner-form">
 									<div class="input-field first-wrap">
-										<input id="search" type="text" placeholder="Restaurant / Meal / Address" />
+										<input id="search" type="text" name="keyword" placeholder="Restaurant / Food / Address" />
 										<i class="fa fa-sliders" style="margin-top: 3px" ng-click="switchShow()"></i>
 								  	</div>
 								  	<div class="input-field third-wrap">
-										<button class="btn know_btn" type="button" onclick="window.location.href=' '">Search</button> <!-- TODO listing.html -->
+										<button class="btn know_btn" type="submit">Search</button>
 								 	</div>
 								</div>
 							</form>
@@ -156,11 +156,11 @@
 											Name: "> 500.000"
 										}];
 										$scope.Cates = [{
-											Name: "Snack"
+											Name: "Restaurant"
 											}, {
 											Name: "Cafe - Dessert"
 											}, {
-											Name: "Restaurant"
+											Name: "Snack"
 											}, {
 											Name: "Bar - Pub"
 										}];
@@ -211,15 +211,15 @@
 									    			$scope.selCateArray.push(cate.Name);
 									    		}
 									    	});
-									    	$scope.sel['no_districts'] = $scope.selDistrict;
-									    	$scope.sel['no_prices'] = $scope.selPrice;
-									    	$scope.sel['no_cates'] = $scope.selCate;
-									    	$scope.sel['selected_dist'] = $scope.selDistrictArray;
-									    	$scope.sel['selected_price'] = $scope.selPriceArray;
-									    	$scope.sel['selected_cate'] = $scope.selCateArray;
-									    	console.log($.param($scope.sel));
+									    	$scope.sel['nd'] = $scope.selDistrict;
+									    	$scope.sel['np'] = $scope.selPrice;
+									    	$scope.sel['nc'] = $scope.selCate;
+									    	$scope.sel['sd'] = $scope.selDistrictArray;
+									    	$scope.sel['sp'] = $scope.selPriceArray;
+									    	$scope.sel['sc'] = $scope.selCateArray;
+									    	// console.log($.param($scope.sel));
 									    	// working //
-									    	//window.location.href=('filtertest.php' + '?' + $.param($scope.sel)); //swap filtertest.php with listing.php // TODO
+									    	window.location.href=({% url 'main:search' %} + '?' + $.param($scope.sel));
 									    };
 									});
 								</script>

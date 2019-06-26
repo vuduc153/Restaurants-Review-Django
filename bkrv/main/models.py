@@ -9,27 +9,30 @@ class Restaurant(models.Model):
     time_close = models.TimeField()
     address = models.CharField(max_length=100)
     type_choices = [
-        ('CF', 'Cafe - Dessert'),
-        ('RS', 'Restaurant'),
-        ('BP', 'Bar - Pub'),
-        ('SK', 'Snack'),
+        ('Cafe - Dessert', 'Cafe - Dessert'),
+        ('Restaurant', 'Restaurant'),
+        ('Bar - Pub', 'Bar - Pub'),
+        ('Snack', 'Snack'),
     ]
     type = models.CharField(choices=type_choices, max_length=30)
     district_choices = [
-        ('DD', 'Dong Da'),
-        ('BD', 'Ba Dinh'),
-        ('TX', 'Thanh Xuan'),
-        ('CG', 'Cau Giay'),
-        ('LB', 'Long Bien'),
-        ('NL', 'Nam Tu Liem'),
-        ('HK', 'Hoan Kiem'),
-        ('TH', 'Tay Ho'),
-        ('HT', 'Hai Ba Trung'),
-        ('HM', 'Hoang Mai'),
-        ('HD', 'Ha Dong'),
-        ('BL', 'Bac Tu Liem'),
+        ('Dong Da', 'Dong Da'),
+        ('Ba Dinh', 'Ba Dinh'),
+        ('Thanh Xuan', 'Thanh Xuan'),
+        ('Cau Giay', 'Cau Giay'),
+        ('Long Bien', 'Long Bien'),
+        ('Nam Tu Liem', 'Nam Tu Liem'),
+        ('Hoan Kiem', 'Hoan Kiem'),
+        ('Tay Ho', 'Tay Ho'),
+        ('Hai Ba Trung', 'Hai Ba Trung'),
+        ('Hoang Mai', 'Hoang Mai'),
+        ('Ha Dong', 'Ha Dong'),
+        ('Bac Tu Liem', 'Bac Tu Liem'),
     ]
     district = models.CharField(choices=district_choices, max_length=30)
+
+    def __str__(self):
+        return self.name
 
 
 class CustomUser(AbstractUser):
@@ -40,17 +43,19 @@ class CustomUser(AbstractUser):
 
 class Review(models.Model):
     review = models.TextField()
-    rating = models.FloatField(default=0)
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
 
-class ReviewItem(models.Model):
+class RestaurantItem(models.Model):
     name = models.CharField(max_length=50)
     price = models.IntegerField()
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class ReviewComment(models.Model):
@@ -68,3 +73,6 @@ class Vote(models.Model):
     vote = models.CharField(choices=vote_choices, max_length=5)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.vote

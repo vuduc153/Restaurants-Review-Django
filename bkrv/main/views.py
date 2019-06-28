@@ -81,13 +81,22 @@ def post(request):
     if request.method == 'POST':
         review_form = ReviewForm(request.POST)
         restaurant_form = RestaurantForm(request.POST)
-        item_form = RestaurantItemForm()
-        if review_form.is_valid() and restaurant_form.is_valid():
+        item_name = request.POST.getlist('item_name[]')
+        item_price = request.POST.getlist('item_price[]')
+        item_form = [RestaurantItemForm({'name': item_name[i], 'price': item_price[i]}) for i in range(0, len(item_name))]
+        if review_form.is_valid() and restaurant_form.is_valid() and all([form.is_valid() for form in item_form]):
+            # store restaurant to database
             restaurant = restaurant_form.save()
+            # store review to database
             review = review_form.save(commit=False)
             review.user = request.user
             review.restaurant = restaurant
             review.save()
+            # store items to database
+            for form in item_form:
+                item = form.save(commit=False)
+                item.restaurant = restaurant
+                item.save()
             return redirect('main:index')
     else:
         review_form = ReviewForm()

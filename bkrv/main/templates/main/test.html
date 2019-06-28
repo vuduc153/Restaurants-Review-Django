@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 </head>
 <body>
-    <form method="post" ng-app="mealApp" ng-controller="mealController">
+    <form method="post" action="{% url 'main:post' %}" ng-app="mealApp" ng-controller="mealController">
     {% csrf_token %}
         <div>
         {% for field in review_form %}
@@ -40,13 +40,13 @@
             <div class="info-input">
                 <div class="item-label">Tên món ăn:</div>
                 <div class="item-detail">
-                    <input type="text" placeholder="{% verbatim %}{{ meal.Id }}{% endverbatim %}" name="{% verbatim %}{{ meal.Id }}{% endverbatim %}.name"/>
+                    <input type="text" placeholder="{% verbatim %}{{ meal.Id }}{% endverbatim %}" name="item_name[]"/>
                 </div>
             </div>
             <div class="info-input">
                 <div class="item-label">Mức giá:</div>
                 <div class="item-detail">
-                    <input type="text" placeholder="{% verbatim %}{{ meal.Id }}{% endverbatim %}" name="{% verbatim %}{{ meal.Id }}{% endverbatim %}.price"/>
+                    <input type="text" placeholder="{% verbatim %}{{ meal.Id }}{% endverbatim %}" name="item_price[]"/>
                 </div>
             </div>
         </div>
@@ -55,5 +55,8 @@
         </div>
         <button type="submit">SUBMIT</button>
     </form>
+
+        <p>{{ length }}</p>
+
 </body>
 </html>

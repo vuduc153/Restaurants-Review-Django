@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body>
+    <form method="post" ng-app="mealApp" ng-controller="mealController">
+    {% csrf_token %}
+        <div>
+        {% for field in review_form %}
+        <label>{{ field.label_tag }}</label>
+        {{ field }}
+        {% endfor %}
+        </div>
+        <div>
+            {% for field in restaurant_form %}
+            <label>{{ field.label_tag }}</label>
+            {{ field }}
+            {% endfor %}
+        </div>
+        <script>
+            var Mapp = angular.module('mealApp', []);
+            Mapp.controller('mealController', function ($scope) {
+                $scope.Meals = [{
+                    Id: 1
+                }];
+                $scope.id = 2;
+                $scope.addElement = function () {
+                    $scope.Meals.push({
+                        Id: $scope.id
+                    });
+                    $scope.id = $scope.id + 1;
+                };
+            });
+        </script>
+        <div ng-repeat="meal in Meals">
+            <div class="info-input">
+                <div class="item-label">Tên món ăn:</div>
+                <div class="item-detail">
+                    <input type="text" placeholder="{% verbatim %}{{ meal.Id }}{% endverbatim %}" name="{% verbatim %}{{ meal.Id }}{% endverbatim %}.name"/>
+                </div>
+            </div>
+            <div class="info-input">
+                <div class="item-label">Mức giá:</div>
+                <div class="item-detail">
+                    <input type="text" placeholder="{% verbatim %}{{ meal.Id }}{% endverbatim %}" name="{% verbatim %}{{ meal.Id }}{% endverbatim %}.price"/>
+                </div>
+            </div>
+        </div>
+        <div class="add-meal-btn" style="margin-bottom: 10px">
+            <button type="button" ng-click="addElement()">+</button>
+        </div>
+        <button type="submit">SUBMIT</button>
+    </form>
+</body>
+</html>

@@ -283,7 +283,13 @@
 	                    <div class="featured-place-wrap">
 	                        <a href="detail.html">
 	                            <img src="{{ user.picture.url }}" class="img-fluid" alt="#">
-	                            <span class="featured-rating-orange">{{ object.rating }}</span>
+	                            <span class="   {% if object.rating < 4 %}
+	                                            featured-rating
+                                                {% elif object.rating < 8 %}
+                                                featured-rating-orange
+                                                {% else %}
+                                                featured-rating-green
+                                                {% endif %}">{{ object.rating }}</span>
 	                            <div class="featured-title-box">
 	                                <h6 name="store_name">{{ object.restaurant.name }}</h6>
 	                                <p name="store_type">{{ object.restaurant.type }} </p> <span>• </span>

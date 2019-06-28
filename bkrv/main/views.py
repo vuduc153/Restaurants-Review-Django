@@ -1,6 +1,4 @@
-from django.http import Http404
-
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, RestaurantItemForm, RestaurantForm, ReviewForm
 from .models import Review
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
@@ -77,3 +75,21 @@ class ResultListView(ListView):
         # request sent from search filter with no item selected / invalid request
         else:
             return base_query
+
+
+def post(request):
+    if request.method == 'POST':
+        review_form = ReviewForm(request.POST)
+        restaurant_form = RestaurantForm(request.POST)
+        item_form = RestaurantItemForm()
+        if review_form.is_valid() and restaurant_form.is_valid():
+            restaurant = restaurant_form.save()
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.restaurant = restaurant
+            review.save()
+            return redirect('main:index')
+    else:
+        review_form = ReviewForm()
+        restaurant_form = RestaurantForm()
+    return render(request, 'main/test.html', {'review_form': review_form, 'restaurant_form': restaurant_form})

@@ -1,0 +1,313 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<!-- Mobile Specific Meta -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<!-- Custom Fonts -->
+		<link rel="stylesheet" href="{% static 'main/custom-font/fonts.css' %}" />
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}" />
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="{% static 'main/css/font-awesome.min.css' %}" />
+		<!-- Bootsnav -->
+		<link rel="stylesheet" href="{% static 'main/css/bootsnav.css' %}">
+		<!-- Custom stylesheet -->
+		<link rel="stylesheet" href="{% static 'main/css/listing-detail.css' %}" />
+		<link rel="stylesheet" href="{% static 'main/css/post.css' %}"/>
+		<!-- AngularJS -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<!-- Simple line Icon -->
+	    <link rel="stylesheet" href="{% static 'main/css/simple-line-icons.css' %}">
+	    <!-- Themify Icon -->
+	    <link rel="stylesheet" href="{% static 'main/css/themify-icons.css' %}">
+		<!-- Swipper Slider -->
+		<link rel="stylesheet" href="{% static 'main/css/swiper.min.css' %}">
+	</head>
+	<body>
+
+		<!-- Preloader -->
+
+		<div id="loading">
+			<div id="loading-center">
+				<div id="loading-center-absolute">
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+				</div>
+			</div>
+		</div>
+
+		<!--End off Preloader -->
+
+		<!-- Header -->
+		<header>
+			<!-- Navbar -->
+			<nav class="navbar bootsnav">
+				<div class="container">
+					<!-- Header Navigation -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+							<i class="fa fa-bars"></i>
+						</button>
+					</div>
+					<!-- Navigation -->
+					<div class="collapse navbar-collapse" id="navbar-menu">
+                        <ul class="nav navbar-nav menu">
+							<li><a href="{% url 'main:index' %}">Home</a></li>
+                            {% if user.is_authenticated %}
+                            <li><a href="#">{{ user.username }}</a></li>
+                            <li><a href="{% url 'main:logout' %}">Logout</a></li>
+                            {% else %}
+							<li><a href="{% url 'main:login' %}">Login</a></li>
+							<li><a href="{% url 'main:register' %}">Register</a></li>
+                            {% endif %}
+						</ul>
+					</div>
+				</div>   
+			</nav><!-- Navbar end -->
+		</header><!-- Header end -->
+
+		<section id="home" class="home">
+			<!-- Carousel -->
+			<div id="carousel" class="carousel slide" data-ride="carousel">
+				<!-- Carousel-inner -->
+				<div class="carousel-inner" role="listbox">
+					<div class="item active">
+						<img src="{% static 'main/images/listing-food.jpg' %}">
+						<div class="overlay">
+						</div>
+					</div>        
+				</div><!-- Carousel-inner end -->
+			</div><!-- Carousel end-->
+		</section>
+
+		<!--============================= DESCRIPTION =============================-->
+		<section class="store-block">
+			<div class="container">
+				<div class="row">
+						<h5 style="margin-bottom: 4px">Write a review</h5>
+						<p class="store-description" style="display: block;">
+							<span class="store-description-type">Share your favorite place!</span>
+						</p>
+				</div>
+			</div>
+		</section>
+		<!--//END DESCRIPTION -->
+		
+		<!--============================= REVIEW DETAILS =============================-->
+		<section class="light-bg review-details_wrap">
+			<div class="container">
+				<div class="review-checkbox_wrap" style="height: auto;">
+					<form method="post" enctype="multipart/form-data" action="{% url 'main:post' %}" ng-app="mealApp" ng-controller="mealController">
+                        {% csrf_token %}
+						<div class="review-checkbox" name="basic_info" >
+							<span class="ti-check-box"></span>
+							<h6 style="display: inline-block;">Basic information</h6>
+							<hr>
+						</div>
+						<div class="info-content">
+                            {% for field in restaurant_form %}
+                                <div class="info-input">
+                                    <div class="item-label">{{ field.label }}</div>
+                                    <div class="item-detail">
+                                        {{ field }}
+                                    </div>
+                                    {% for error in field.errors %}
+                                        <small style="color: red">{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+						</div>
+
+						<div class="review-checkbox" name="detailed_info" style="margin-top: 50px">
+							<span class="ti-check-box"></span>
+							<h6 style="display: inline-block;">Detail information</h6>
+							<hr>
+						</div>
+						<script>
+							var Mapp = angular.module('mealApp', []);
+							Mapp.controller('mealController', function($scope) {
+								$scope.Meals = [{
+									Id: 1
+									}];
+								$scope.id = 2;
+								$scope.addElement = function() {
+									$scope.Meals.push({
+										Id: $scope.id
+									});
+									$scope.id = $scope.id + 1;
+								};
+								$scope.removeElement = function () {
+                                    if($scope.id > 2) {
+                                        $scope.Meals.pop();
+                                        $scope.id = $scope.id - 1;
+                                    }
+                                };
+							});
+						</script>
+						<div class="info-content">
+                            <div ng-repeat="meal in Meals">
+                                <div class="info-input">
+                                    <div class="item-label">Popular dish</div>
+                                    <div class="item-detail">
+                                        <input type="text" name="item_name[]" required/>
+                                    </div>
+                                </div>
+                                <div class="info-input">
+                                    <div class="item-label">Price</div>
+                                    <div class="item-detail">
+                                        <input type="text" name="item_price[]" required/>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if item_error %}
+                            <small style="color: red">Please enter a valid number</small>
+                            {% endif %}
+							<div class="add-meal-btn" style="margin-bottom: 10px">
+								<button type="button" ng-click="addElement()">+</button>
+							</div>
+                            <div class="add-meal-btn" style="margin-bottom: 10px">
+								<button type="button" ng-click="removeElement()">-</button>
+							</div>
+						</div>
+						<div class="info-content">
+                            <div class="info-input">
+                                <div class="item-label" style="width: 100%">{{ review_form.review.label }}</div>
+                                {{ review_form.review|add_class:"custom_textarea" }}
+                            </div>
+                            <div class="info-input">
+                                <div class="item-label">{{ review_form.rating.label }}</div>
+                                <div class="item-detail">
+                                    {{ review_form.rating|attr:"min:0"|attr:"max:10" }}
+                                </div>
+                            </div>
+						</div>
+						<div class="info-content">
+							<div class="info-input">
+								<div class="item-label" style="width: 100%">Images</div>
+								<div id="wrapper" style="margin-top: 30px">
+                                    <div class="add-meal-btn" style="margin-bottom: 10px">
+                                        <label for="upload_file">+</label>
+                                        <input type="file" style="display: none" id="upload_file" name="file[]" onchange="preview_image()" multiple/>
+                                    </div>
+								</div>
+							</div>
+                            {% if image_error %}
+                            <small style="color: red">Please choose an image</small>
+                            {% endif %}
+                            <div id="image_preview"></div>
+						</div>
+						<input class="btn submit_btn" type="submit" value="Upload" style="margin-top: 30px">
+					</form>
+				</div>
+			</div>
+		</section>
+		<!--//END REVIEW DETAILS -->
+
+		<!-- Footer -->
+		<footer>
+			<!-- Footer top -->
+			<div class="container footer_top">
+				<div class="row">
+					<div class="col-lg-4 col-sm-7">
+						<div class="footer_item">
+							<h4>About Company</h4>
+							<img class="logo" src="{% static 'main/images/logo.png' %}" style="width: 200px; height: 50px" />
+							<p>Sản phẩm là quá trình sản sinh tri thức một cách khách quan và tự nguyện của một nhóm bạn trẻ SDL Đại Học Bách Khoa Hà Nội. Lấy ý tưởng từ phần mềm diệt virus BKAV, BKRV ra đời nhằm mục đích quảng bá món ăn Việt Nam đến với bạn bè Thế Giới.</p>
+
+							<ul class="list-inline footer_social_icon">
+								<li><a href=""><span class="fa fa-facebook"></span></a></li>
+								<li><a href=""><span class="fa fa-twitter"></span></a></li>
+								<li><a href=""><span class="fa fa-youtube"></span></a></li>
+								<li><a href=""><span class="fa fa-google-plus"></span></a></li>
+								<li><a href=""><span class="fa fa-linkedin"></span></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-2 col-sm-5">
+						<div class="footer_item">
+							<h4>Sponsers</h4>
+							<ul class="list-unstyled footer_menu">
+								<li><a href="https://www.facebook.com/cafetrasuathayphuong/"><span class="fa fa-play"></span> Citea FUN</a>
+								<li><a href="https://www.facebook.com/chienhedspi"><span class="fa fa-play"></span> TSCBSM Group</a>
+								<li><a href="https://www.facebook.com/vingroup.net/"><span class="fa fa-play"></span> Vin Group</a>
+								<li><a href="https://www.foody.vn/ha-noi"><span class="fa fa-play"></span> Foody.vn</a>
+								<li><a href="https://lala.vn/"><span class="fa fa-play"></span> LALA</a>
+								<li><a href="https://www.facebook.com/The.ThanosMadTitan"><span class="fa fa-play"></span> Thanos</a>
+								<li><a href="https://www.facebook.com/vuduc153"><span class="fa fa-play"></span> Spider MAN</a>
+								<li><a href="https://www.facebook.com/hedspi.nichibu/"><span class="fa fa-play"></span> Hedspi Nichibu</a>
+								<li><a href="https://www.facebook.com/JAV-Company-233850186650513/"><span class="fa fa-play"></span> JAV Company</a>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-7">
+						<div class="footer_item">
+							<h4>Don't read the lines below</h4>
+							<ul class="list-unstyled post">
+								<li><a href=""><span class="date">03 <small>MBR</small></span>  Project made by SDL Team<br/>with 3 members</a></li>
+								<li><a href=""><span class="date">02 <small>WRK</small></span>  Number of people really doing this project</a></li>
+								<li><a href=""><span class="date">01 <small>TER</small></span>  Takes 1 month of implementation</a></li>
+								<li><a href=""><span class="date">10 <small>DIM</small></span><b>  Số điểm mà nhóm mong muốn có được</b></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-3 col-sm-5">
+						<div class="footer_item">
+							<h4>Come with us</h4>
+							<ul class="list-unstyled footer_contact">
+								<li><a href=""><span class="fa fa-map-marker"></span> 17 Ta Quang Buu , HBC HN VN</a></li>
+								<li><a href=""><span class="fa fa-envelope"></span> Email.Never.Read@gmail.com</a></li>
+								<li><a href=""><span class="fa fa-mobile"></span><p>+84 24 66 711 211 <br />+84 69 96 069 069</p></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div><!-- Footer top end -->
+
+			<!-- Footer bottom -->
+			<div class="footer_bottom text-center">
+				<p class="wow fadeInRight">
+					Made with
+					<i class="fa fa-heart"></i>
+					by
+					<a target="_blank" href="http://bootstrapthemes.co">Bootstrap Themes</a>
+					2016. All Rights Reserved
+				</p>
+			</div><!-- Footer bottom end -->
+		</footer><!-- Footer end -->
+
+		<!-- JavaScript -->
+		<script>
+		function preview_image() 
+		{
+		 var total_file=document.getElementById("upload_file").files.length;
+		 for(var i=0;i<total_file;i++)
+		 {
+		  $('#image_preview').append("<img src='"+URL.createObjectURL(event.target.files[i])+"'><br>");
+		 }
+		}
+		</script>
+		<!-- JavaScript -->
+		<script src="{% static 'main/js/jquery-1.12.1.min.js' %}"></script>
+		<script src="{% static 'main/js/bootstrap.min.js' %}"></script>
+
+
+		<!-- JS Implementing Plugins -->
+		<script src="{% static 'main/js/isotope.js' %}"></script>
+		<script src="{% static 'main/js/isotope-active.js' %}"></script>
+
+		<script src="{% static 'main/js/jquery.scrollUp.min.js' %}"></script>
+
+		<script src="{% static 'main/js/main.js' %}"></script>
+	</body>	
+</html>	

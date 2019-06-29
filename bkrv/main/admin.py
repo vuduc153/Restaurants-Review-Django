@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser, Review, Restaurant, ReviewComment, RestaurantItem, Vote
+from .models import CustomUser, Review, Restaurant, ReviewComment, RestaurantItem, Vote, ReviewImage
 
 
 class CustomUserAdmin(UserAdmin):
@@ -17,3 +17,4 @@ admin.site.register(Restaurant)
 admin.site.register(RestaurantItem)
 admin.site.register(ReviewComment)
 admin.site.register(Vote)
+admin.site.register(ReviewImage)

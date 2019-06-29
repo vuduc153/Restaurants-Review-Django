@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser, Review, Restaurant, RestaurantItem
+from .models import CustomUser, Review, Restaurant, RestaurantItem, ReviewImage
 from django.forms import ModelForm
 
 
@@ -21,14 +21,14 @@ class ReviewForm(ModelForm):
 
     class Meta:
         model = Review
-        fields = ('review', 'downvotes', 'upvotes', 'rating')
+        fields = ('review', 'rating')
 
 
 class RestaurantForm(ModelForm):
 
     class Meta:
         model = Restaurant
-        fields = ('name', 'time_open', 'time_close', 'address', 'type', 'district')
+        fields = ('name', 'address', 'time_open', 'time_close', 'type', 'district')
 
 
 class RestaurantItemForm(ModelForm):
@@ -37,3 +37,9 @@ class RestaurantItemForm(ModelForm):
         model = RestaurantItem
         fields = ('name', 'price')
 
+
+class ReviewImageForm(ModelForm):
+
+    class Meta:
+        model = ReviewImage
+        fields = ('image', )

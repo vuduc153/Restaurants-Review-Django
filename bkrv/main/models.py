@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Restaurant(models.Model):
@@ -67,9 +68,19 @@ class Review(models.Model):
     review = models.TextField()
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
-    rating = models.IntegerField(default=0)
+    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+
+def review_image_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/reviews/<review_id>/<filename>
+    return 'reviews/{}/{}'.format(instance.review.id, filename)
+
+
+class ReviewImage(models.Model):
+    image = models.ImageField(upload_to=review_image_path)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
 
 
 class RestaurantItem(models.Model):

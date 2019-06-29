@@ -1,4 +1,4 @@
-from .forms import CustomUserCreationForm, RestaurantItemForm, RestaurantForm, ReviewForm
+from .forms import CustomUserCreationForm, RestaurantItemForm, RestaurantForm, ReviewForm, ReviewImageForm
 from .models import Review
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
@@ -81,10 +81,22 @@ def post(request):
     if request.method == 'POST':
         review_form = ReviewForm(request.POST)
         restaurant_form = RestaurantForm(request.POST)
+        # items handling
         item_name = request.POST.getlist('item_name[]')
         item_price = request.POST.getlist('item_price[]')
         item_form = [RestaurantItemForm({'name': item_name[i], 'price': item_price[i]}) for i in range(0, len(item_name))]
-        if review_form.is_valid() and restaurant_form.is_valid() and all([form.is_valid() for form in item_form]):
+        if not all([form.is_valid() for form in item_form]):
+            return render(request, 'main/post.html',
+                          {'review_form': review_form, 'restaurant_form': restaurant_form, 'item_error': True})
+        # images handling
+        images = request.FILES.getlist('file[]')
+        image_form = [ReviewImageForm(None, {'image': images[i]}) for i in range(0, len(images))]
+        if not images:
+            return render(request, 'main/post.html',
+                          {'review_form': review_form, 'restaurant_form': restaurant_form, 'image_error': True})
+        if review_form.is_valid() and restaurant_form.is_valid() \
+                and all([form.is_valid() for form in item_form]) \
+                and all([form.is_valid() for form in image_form]):
             # store restaurant to database
             restaurant = restaurant_form.save()
             # store review to database
@@ -97,8 +109,13 @@ def post(request):
                 item = form.save(commit=False)
                 item.restaurant = restaurant
                 item.save()
+            # store images to database
+            for form in image_form:
+                image = form.save(commit=False)
+                image.review = review
+                image.save()
             return redirect('main:index')
     else:
         review_form = ReviewForm()
         restaurant_form = RestaurantForm()
-    return render(request, 'main/test.html', {'review_form': review_form, 'restaurant_form': restaurant_form})
+    return render(request, 'main/post.html', {'review_form': review_form, 'restaurant_form': restaurant_form})

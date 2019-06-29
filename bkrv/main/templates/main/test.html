@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 </head>
 <body>
-    <form method="post" action="{% url 'main:post' %}" ng-app="mealApp" ng-controller="mealController">
+    <form method="post" enctype="multipart/form-data" action="{% url 'main:post' %}" ng-app="mealApp" ng-controller="mealController">
     {% csrf_token %}
         <div>
         {% for field in review_form %}
@@ -53,10 +53,9 @@
         <div class="add-meal-btn" style="margin-bottom: 10px">
             <button type="button" ng-click="addElement()">+</button>
         </div>
+        <input type="file" name="file[]" multiple>
         <button type="submit">SUBMIT</button>
     </form>
-
-        <p>{{ length }}</p>
-
+<p>{{ image }}</p>
 </body>
 </html>

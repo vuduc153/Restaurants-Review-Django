@@ -283,7 +283,7 @@
 			<div class="container">
 				<div class="button__header">
 					<h2 class="styled-heading">RECENT REVIEW</h2>
-					<a class="btn-view__more" href="#">View all reviews</a> <!-- TODO listing.html -->
+					<a class="btn-view__more" href="{% url 'main:search' %}">View all reviews</a>
 				</div>
 				<div class="row">
 					{% for review in recent_list %}
@@ -292,7 +292,7 @@
                                 <img src="{{ review.first_image.image.url }}"/>
                                 <h3>{{ review.restaurant.name }}</h3>
                                 <p>{{ review.review }}</p>
-                                <a href="" class="btn know_btn">View more</a> <!-- TODO detail.html -->
+                                <a href="{% url 'main:detail' review.id %}" class="btn know_btn">View more</a>
                             </div>
                         </div>
                     {% endfor %}
@@ -305,7 +305,7 @@
 			<div class="container">
 				<div class="button__header">
 					<h2 class="styled-heading">POPULAR REVIEW</h2>
-					<a class="btn-view__more" href="">View all reviews</a> <!-- TODO listing.html -->
+					<a class="btn-view__more" href="{% url 'main:search' %}">View all reviews</a>
 				</div>
 				<div class="row">
 					{% for review in popular_list %}
@@ -314,7 +314,7 @@
                                 <img src="{{ review.first_image.image.url }}"/>
                                 <h3>{{ review.restaurant.name }}</h3>
                                 <p>{{ review.review }}</p>
-                                <a href="" class="btn know_btn">View more</a> <!-- TODO detail -->
+                                <a href="{% url 'main:detail' review.id %}" class="btn know_btn">View more</a>
                             </div>
                         </div>
                     {% endfor %}

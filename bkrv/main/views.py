@@ -3,26 +3,23 @@ from .models import Review
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.views.generic.list import ListView
+from django.views.generic import DetailView
 from .utils import get_price_range
 
 
-def index(request):
-    return render(request, 'main/index.html')
+class IndexView(ListView):
 
+    context_object_name = 'recent_list'
+    template_name = 'main/index.html'
 
-def register(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('main:index')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'main/register.html', {'form': form})
+    def get_queryset(self):
+        return Review.objects.select_related('restaurant').prefetch_related('reviewimage_set').order_by('-id')[:3]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['popular_list'] = Review.objects.select_related('restaurant').prefetch_related('reviewimage_set').\
+            order_by('-upvotes')[:3]
+        return context
 
 
 class ResultListView(ListView):
@@ -31,7 +28,6 @@ class ResultListView(ListView):
     template_name = 'main/listing.html'
 
     def get_queryset(self):
-
         # request sent from search bar
         base_query = Review.objects.select_related('restaurant').\
             prefetch_related('restaurant__restaurantitem_set').all()
@@ -77,7 +73,31 @@ class ResultListView(ListView):
             return base_query
 
 
+class ReviewDetailView(DetailView):
+
+    template_name = 'main/detail.html'
+    queryset = Review.objects.select_related('restaurant').select_related('user').\
+        prefetch_related('reviewcomment_set').prefetch_related('restaurant__restaurantitem_set')
+
+
+def register(request):
+
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('main:index')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'main/register.html', {'form': form})
+
+
 def post(request):
+
     if request.method == 'POST':
         review_form = ReviewForm(request.POST)
         restaurant_form = RestaurantForm(request.POST)

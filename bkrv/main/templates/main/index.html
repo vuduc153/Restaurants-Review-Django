@@ -264,7 +264,13 @@
 								<h3>Hedspi Food Review</h3>
 								<h1>Random text</h1>
 								<h1 class="second_heading">Creative & Professional</h1>
-								<a href="#" class="btn know_btn">Write a review</a>
+								<a href="
+                                {% if user.is_authenticated %}
+                                {% url 'main:post' %}
+                                {% else %}
+                                {% url 'main:login' %}
+                                {% endif %}
+                                " class="btn know_btn">Write a review</a>
 							</div>					
 						</div>
 					</div>        
@@ -280,63 +286,16 @@
 					<a class="btn-view__more" href="#">View all reviews</a> <!-- TODO listing.html -->
 				</div>
 				<div class="row">
-					<div class="col-md-4">
-						<div class="service_item">
-							<img src="{% static 'main/temp/1.jpg' %}"/>
-							<h3>Mỳ vằn thắn hủ tíu</h3>
-							<p>Lâu lắm rồi mới được ăn bát Mỳ Vằn Thắn hợp khẩu vị của mình đến như vậy.
-							Bát mỳ đầy đặn dặn nhiều thịt , thịt xá xíu và sủi cảo tẩm ướp vừa miệng , há cảo to giòn tan , gan nếp ăn rất bùi, nước dùng trong vắt ngon ngọt đậm vị xương và tôm chắc là ko có mỳ chính vì mình nuốt nước bọt cũng ko thấy lợ cổ
-							<br>+ Quán sạch sẽ đèn đuốc sáng choang , ông chú chủ quán hiền lành siêu vui tính , trà đá miễn phí 
-							<br>- Điểm trừ ko có tôm tươi và bóng bì ,quán hơi bé </p>
-							<a href="" class="btn know_btn">View more</a> <!-- TODO detail.html -->
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="service_item">
-							<img src="{% static 'main/temp/2.jpg' %}"/>
-							<h3>Gà rán</h3>
-							<p>Quán gà ngon nhất mình từng ăn
-							2 món là 480k ạaaa
-
-							Vị trí hơi khó tìm. Các cậu đi đến the manor tìm quán KFC, đi thêm 1 tẹo thì mới thấy quán này
-
-							Quán bình thường, tầng 1 khá mùi, tầng 2 thì ok. Quán hơn bình dân 1 xíu thôi. Đông khách lắm, nên ồn cực không gian chỉ là có chỗ để ngồi ăn thôi, ko xấu ko đẹp
-
-							Mình gọi 1/2 gà mật ong và má đùi sốt bbq. Gà mật ong k phải sốt như các quán khác, mà là dạng bột. Ăn ngon cực. Giòn giòn, ngọt ngọt, mặn mặn, thơm thơm 
-							Món này ngon nhất Hà Nội luôn ấy ngon lắm luônnnnnnnnnn
-
-							Đùi sốt bbq thì k có xương, vị ổn. Vì gà kia át vị mất rồi, ngon quá, nên t thấy má đùi cũng ngon nhưng k bằng mật ong
-
-							Nước lọc free, củ cải muối và salad free. Củ cải muối ăn vs gà vào cực
-
-							Ở đây k có dao đâu các cậu ạ. Ng ta đưa cho 2 cái dĩa ko hiểu lắm
-							Nên mình phải xin găng tay cầm ăn cho tiện
-
-							Nhân viên ngoan lắm
-
-							Tớ thấy bàn bên cạnh gọi tokbokki to như cái nồi lẩu nhìn hấp dẫn cực. Nhưng to quá, phải 4 người mới hết ý
-
-							Khen: đồ ngon, gà ko mềm oặt như gà công nghiệp.
-							Sốt chấm ngonnnnnn
-							Nhân viên xinh gái đẹp trai và nhiệt tình dù quán đông
-
-							Chê: Gà mật ong tầm 5p là có, còn bbq thì 20p đợi rõ lâu
-							Có mỗi salad vs củ cải-bắp cải muối
-							Quán ko đẹp
-							Giấy dùng giấy toilet rồi rút và xé
-
-							Chấm 9,5 nhé️ ngon lắm</p>
-							<a href="" class="btn know_btn">View more</a> <!-- TODO detail.html -->
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="service_item">
-							<img src="{% static 'main/temp/3.jpg' %}"/>
-							<h3>Bánh trôi tàu</h3>
-							<p>Hà Nội ngày trở rét, lại thèm một bát bánh trôi tàu nóng hổi. Năm ngoái nhà bác Bằng mở lại mà chưa có dịp ăn thử, được dịp lại lật đật lên phố. Ở đây bán 3 loại : bánh trôi tàu, chí má phù với lục tàu xá. Một bát có 2 bánh, một nhân dừa và một nhân mè đen. Cảm quan thì mình vẫn thích nhân mè hơn, ăn bùi bùi thơm thơm. Bánh mềm, nước dùng thơm mùi gừng và cũng bị ngọt quá. Ăn xong bát này vừa ấm bụng mà vừa ấm người. Chắc chắn sẽ quay lại để thử tiếp 2 món còn lại</p>
-							<a href="" class="btn know_btn">View more</a> <!-- TODO detail.html -->
-						</div>
-					</div>
+					{% for review in recent_list %}
+                        <div class="col-md-4">
+                            <div class="service_item">
+                                <img src="{{ review.first_image.image.url }}"/>
+                                <h3>{{ review.restaurant.name }}</h3>
+                                <p>{{ review.review }}</p>
+                                <a href="" class="btn know_btn">View more</a> <!-- TODO detail.html -->
+                            </div>
+                        </div>
+                    {% endfor %}
 				</div>
 			</div>
 		</section><!-- New review end -->
@@ -349,49 +308,28 @@
 					<a class="btn-view__more" href="">View all reviews</a> <!-- TODO listing.html -->
 				</div>
 				<div class="row">
-					<div class="col-md-4">
-						<div class="service_item">
-							<img src="{% static 'main/temp/4.jpg' %}"/>
-							<h3>Quán chay</h3>
-							<p>Vừa ăn chay vừa từ thiện: 
-							quán chay này mở ra theo chương trình “ Gieo Yêu Thương”, chương trình là 1 chuỗi những dự án thiện nguyện dành cho những mảnh đời kém may. 
-							Quán nhỏ, không được trang trí cầu kỳ như những quán chay khác nhưng khi bước chân vào quán tự dưng trong tâm trí mình phải dặn lòng là không được gây mất trật tự 🙂 
-							<br>Ở đây có cơm gieo duyên chỉ 10k ( dạng cơm phần chọn món ý ạ), cơm gạo lức 15k với đầy đủ các món ăn kèm như: chả nấm, chả đậu hũ đồ chay ở đây ăn khá thanh, không bị dầu mỡ.
-							Hôm nay e thử: gỏi hoa chuối được trộn rất vừa ăn chua ngọt đủ vị, rau chuối dai giòn không hề bị chát khi ăn. Món ngó sen chiên phải nói cực ngon, giòn ngọt đồ chiên nhưng rất ráo dầu ăn đến miếng cuối cùng mà lớp bột bao ở ngoài vẫn giòn. Món mọi ng nên thử là chả nấm: ăn rất ấn tượng, ăn 1 lại muốn ăn 2 ngoài ra mọi ng có thể thử bún thái chay. Tất cả các món ăn mình thử qua ở đây đều nấu rất vừa miệng, rất thanh không bị dầu mỡ và rất dễ ăn không khác gì đồ mặn nhưng lại không nấu kiểu giả mặn đâu.
-							<br>Khi đến đây ăn xong mọi người tự dọn dẹp mang ra sau nhà vì ở đây chỉ có duy nhất 1 cô vừa nấu ăn vừa phục vụ đón khách. Cô tất bật nhưng vẫn luôn niềm nở với khách và rất ân cần hỏi thăm khách. Ăn xong mọi ng có thể trả tiền bằng cách cho vào 1 cái hòm để ở quầy bày đồ ăn, bạn có thể trả bằng hoặc dư tuỳ tâm bạn. 
-							Địa chỉ: 8 Châu Long</p>
-							<a href="" class="btn know_btn">View more</a> <!-- TODO detail -->
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="service_item">
-							<img src="{% static 'main/temp/5.jpg' %}"/>
-							<h3>Bún ốc</h3>
-							<p>Tự nghĩ tại sao lại không biết sớm hơn vì nó đúng chuẩn ngon rẻ luôn 😍 quán bán bún ốc, giò, cá siêu ngon mà chỉ 15k một bát ăn siêu no , bác ý kể bán được 20 năm r , bán rẻ thế thôi vì sinh viên làm gì có nhiều tiền , thanh toán đi về r vẫn còn thấy thích , quán ở cạnh quán phở kcc 112 b4 tôn thất tùng , đối diện nhà thuốc số 4 đại học y hà nội đến thử có khi quên lối về luôn </p>
-							<a href="" class="btn know_btn">View more</a>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="service_item">
-							<img src="{% static 'main/temp/6.jpg' %}"/>
-							<h3>King Dakgalbi</h3>
-							<p>Đọc review trên foody có người khen có người chê nhưng nhìn cái ảnh bạn nào đó up trên face hấp dẫn, đang chạm đến cơn thèm đồ Hàn nên mình bất chấp đến ăn. Mình đặt qua foody để được giảm 5 - 10% nhưng bảo là 20/11 quán đông khách nên không nhận. Mình lại gọi thẳng cho quán hẹn 18h30 cũng bảo khách đông nên đến 18h. Ok. Vừa đi làm về là phi lên luôn để dành bàn. Nhưng hỡi ôi, có khách đâu, lèo tèo dã man. Mình ngồi đến gần 9h tối đúng có 2 nhóm (2 bạn nữ + một nhóm 3 bạn và 1 bạn mua đồ về, còn lại 2 anh Deliver now đến mua). Cảm giác bị lừa í :(
-							<br>Mình gọi 1 suất gà 250 (6 cánh, 4 đùi), 1 mì tương đen, 1 cơm rang kim chi, 3 nước gạo hết 470k. Đồ hơi nguội, không ngon. Nhà hàng nhìn cứ tối tối, ẩm ẩm, lúc ăn có 1 con ruồi cứ loanh quanh, híc. Bên dưới là cái ảnh đã khiến mình lầm lỡ ạ.</p>
-							<a href="" class="btn know_btn">View more</a>
-						</div>
-					</div>
+					{% for review in popular_list %}
+                        <div class="col-md-4">
+                            <div class="service_item">
+                                <img src="{{ review.first_image.image.url }}"/>
+                                <h3>{{ review.restaurant.name }}</h3>
+                                <p>{{ review.review }}</p>
+                                <a href="" class="btn know_btn">View more</a> <!-- TODO detail -->
+                            </div>
+                        </div>
+                    {% endfor %}
 				</div>
 			</div>
 		</section><!-- Popular review end -->
 
-		<!-- start blog Area -->		
-		<section id="quick">
+		<!-- start quick search area -->
+		<section id="quick" ng-app="qsApp" ng-controller="qsController">
 			<div class="container">
 				<h2 class="styled-heading">Quick search</h2>
 				<div class="row">
 					<div class="col-md-3">
 						<div class="service_item">
-							<a href=""> <!-- TODO listing.html -->
+							<a href="{% url 'main:search' %}?sc[]=Snack" id="snack">
 								<div class ="container">
 									<img class="img-fluid image" src="{% static 'main/images/anvat.jpg' %}"/>
 									<div class="overlay">
@@ -403,7 +341,7 @@
 					</div>
 					<div class="col-md-3">
 						<div class="service_item">
-							<a href="listing.html">
+							<a href="{% url 'main:search' %}?sc[]=Cafe+-+Dessert" id="cafe">
 								<div class ="container2">
 									<img class="img-fluid image2" src="{% static 'main/images/cake.jpg' %}"/>
 									<div class="overlay2">
@@ -415,7 +353,7 @@
 					</div>
 					<div class="col-md-3">
 						<div class="service_item">
-							<a href="listing.html">
+							<a href="{% url 'main:search' %}?sc[]=Bar+-+Pub" id="bar">
 								<div class ="container3">
 									<img class="img-fluid image3" src="{% static 'main/images/pub.jpg' %}"/>
 									<div class="overlay3">
@@ -427,7 +365,7 @@
 					</div>
 					<div class="col-md-3">
 						<div class="service_item">
-							<a href="listing.html">
+							<a href="{% url 'main:search' %}?sc[]=Restaurant" id="restaurant"">
 								<div class ="container4">
 									<img class="img-fluid image4" src="{% static 'main/images/restaurant.jpg' %}"/>
 									<div class="overlay4">
@@ -513,7 +451,6 @@
 				</p>
 			</div><!-- Footer bottom end -->
 		</footer><!-- Footer end -->
-
 		<!-- JavaScript -->
 		<script src="{% static 'main/js/jquery-1.12.1.min.js' %}"></script>
 		<script src="{% static 'main/js/bootstrap.min.js' %}"></script>

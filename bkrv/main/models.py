@@ -63,6 +63,18 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    @property
+    def number_of_reviews(self):
+        return self.review_set.count()
+
+    @property
+    def number_of_upvotes(self):
+        return sum(self.review_set.values_list('upvotes', flat=True))
+
+    @property
+    def number_of_downvotes(self):
+        return sum(self.review_set.values_list('downvotes', flat=True))
+
 
 class Review(models.Model):
     review = models.TextField()
@@ -71,6 +83,14 @@ class Review(models.Model):
     rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+    @property
+    def first_image(self):
+        return self.reviewimage_set.first()
+
+    @property
+    def number_of_comments(self):
+        return self.reviewcomment_set.count()
 
 
 def review_image_path(instance, filename):

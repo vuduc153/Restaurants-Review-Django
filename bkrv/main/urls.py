@@ -10,4 +10,5 @@ urlpatterns = [
     path('search/', views.ResultListView.as_view(), name='search'),
     path('post/', views.post, name='post'),
     path('detail/<int:pk>/', views.ReviewDetailView.as_view(), name='detail'),
+    path('detail/<int:review_id>/vote', views.vote, name='vote'),
 ]

@@ -78,9 +78,9 @@ class CustomUser(AbstractUser):
 
 class Review(models.Model):
     review = models.TextField()
+    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
-    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 

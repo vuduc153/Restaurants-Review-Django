@@ -1,9 +1,12 @@
-from .forms import CustomUserCreationForm, RestaurantItemForm, RestaurantForm, ReviewForm, ReviewImageForm
-from .models import Review
-from django.shortcuts import render, redirect
+from .forms import CustomUserCreationForm, RestaurantItemForm, RestaurantForm, ReviewForm, ReviewImageForm, VotingForm
+from .models import Review, Vote
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .utils import get_price_range
 
 
@@ -78,6 +81,52 @@ class ReviewDetailView(DetailView):
     template_name = 'main/detail.html'
     queryset = Review.objects.select_related('restaurant').select_related('user').\
         prefetch_related('reviewcomment_set').prefetch_related('restaurant__restaurantitem_set')
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(ReviewDetailView, self).dispatch(*args, **kwargs)
+
+
+def vote(request, review_id):
+
+    review = get_object_or_404(Review, id=review_id)
+    if request.POST.get('reqType') == 'vote':
+        vote_type = request.POST.get('voteType')
+        vote_form = VotingForm({'vote': vote_type})
+        if vote_form.is_valid():
+            # if user's already voted, update current record
+            if Vote.objects.filter(user=request.user, review=review):
+                last_state = Vote.objects.filter(user=request.user, review=review).first().vote
+                Vote.objects.filter(user=request.user, review=review).update(vote=vote_type)
+                # update upvotes/downvotes field
+                if last_state == vote_type:  # if last vote == current vote
+                    pass
+                else:
+                    if last_state == 'UP':
+                        review.upvotes -= 1
+                        review.downvotes += 1
+                    else:
+                        review.downvotes -= 1
+                        review.upvotes += 1
+                    review.save()
+
+            # else create new object and save it to database
+            else:
+                vote_object = vote_form.save(commit=False)
+                vote_object.user = request.user
+                vote_object.review = review
+                vote_object.save()
+                # update upvotes/downvotes field
+                if vote_type == 'UP':
+                    review.upvotes += 1
+                else:
+                    review.downvotes += 1
+                review.save()
+
+            # return current upvotes/downvotes
+            return JsonResponse({'error': False, 'upvotes': review.upvotes, 'downvotes': review.downvotes})
+
+    return JsonResponse({'error': True})
 
 
 def register(request):

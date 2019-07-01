@@ -26,7 +26,7 @@
 	    <!-- Magnific Popup CSS -->
 	    <link rel="stylesheet" href="{% static 'main/css/magnific-popup.css' %}">
 	</head>
-	<body>
+	<body ng-app="detailApp" ng-controller="detailController">
 
 		<!-- Preloader -->
 
@@ -107,10 +107,12 @@
 
                             <span class="store-description" style="display: inline-block; color: #b2b8c3">
 	                    		<span name="no_upvotes"
-                                      style="color: #b2b8c3">{{ object.upvotes }}</span> {{ object.upvotes|pluralize:"person, people" }} found this review helpful
+                                      style="color: #b2b8c3" ng-bind="upvoteCount"></span>
+                                <ng-pluralize count="upvoteCount" when="{'1':'person', 'other':'people'}"></ng-pluralize> found this review helpful
 	                    		<span style="display: inline-block; color: #b2b8c3; margin: 0 10px 0">•</span>
 	                    		<span name="no_downvotes"
-                                      style="color: #b2b8c3">{{ object.downvotes }}</span> {{ object.downvotes|pluralize:"person, people" }} found this review not helpful
+                                      style="color: #b2b8c3" ng-bind="downvoteCount"></span>
+                                <ng-pluralize count="downvoteCount" when="{'1':'person', 'other':'people'}"></ng-pluralize> found this review not helpful
 	                    	</span>
 	                    </p>
 	                </div>
@@ -121,11 +123,11 @@
 	                        </div>
 	                        <div class="upvote-btn">
 	                            <div class="featured-btn-wrap">
-	                                <button class="btn know_btn" name="upvote" style="font-size: 14px">UPVOTE</button>
+	                                <button class="btn know_btn" name="upvote" style="font-size: 14px" ng-click="vote('upvote')">UPVOTE</button>
 	                            </div>
 	                        </div>
 	                        <div class="downvote-btn">
-	                            <button class="btn btn-outline-danger" name="downvote" style="font-size: 14px">DOWNVOTE</button>
+	                            <button class="btn btn-outline-danger" name="downvote" style="font-size: 14px" ng-click="vote('downvote')">DOWNVOTE</button>
 	                        </div>
 	                    </div>
 	                </div>
@@ -182,6 +184,35 @@
 	                        </div>
                             {% endfor %}
 	                    </div>
+                        <div class="review-checkbox_wrap mt-4"
+                             style="margin-top: 1.5rem!important; padding-bottom: 50px;">
+                            <h5>Leave a comment</h5>
+                            <hr>
+                            <!-- Actual Comments -->
+                            {% if user.is_authenticated %}
+                            <div class="customer-review_wrap">
+                                <div class="customer-img">
+                                    <img src="{{ user.picture.url }}" class="img-fluid" alt="#" name="user_avatar">
+                                    <!-- current user's profile pic -->
+                                    <p name="user_comment">{{ user.username }}</p> <!-- current user's username -->
+                                </div>
+                                <div class="customer-content-wrap">
+                                    <div class="customer-content">
+                                        <div class="customer-review" style="width: 100%">
+                                            <input type="text" name="summary" id="title" required/>
+                                        </div>
+                                    </div>
+                                    <textarea id="actual_comment"
+                                              style="width: 100%; height: 200px; padding: 16px; margin-top: 20px"></textarea>
+                                </div>
+                            </div>
+                            <button class="comment-submit">Gửi</button>
+                            {% else %}
+                            <div class="customer-review_wrap">
+                                <a class="notice_review" href='{% url 'main:login' %}'>Login to write a comment</a>
+                            </div>
+                            {% endif %}
+                        </div>
 	                </div>
 	                <div class="col-md-4 responsive-wrap">
 	                    <div class="contact-info">
@@ -338,5 +369,34 @@
 	            });
 	        }
 	    </script>
+        <script>
+            var app = angular.module('detailApp', []);
+            app.config(['$httpProvider', function ($httpProvider) {
+                $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+                $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+            }]);
+            app.controller('detailController', function ($scope, $http) {
+                $scope.upvoteCount = {{ object.upvotes }};
+                $scope.downvoteCount = {{ object.downvotes }};
+                $scope.vote = function (type) {
+                    if (type == 'upvote')
+                        $scope.voteType = 'UP';
+                    else
+                        $scope.voteType = 'DW';
+                    $http({
+                        method: 'POST',
+                        url: '{% url 'main:vote' object.id %}',
+                        data: $.param({'reqType': 'vote', 'voteType': $scope.voteType}),
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                    }).then(function (response) {
+                        console.log(response);
+                        if (!response.data.error) {
+                            $scope.upvoteCount = response.data.upvotes;
+                            $scope.downvoteCount = response.data.downvotes;
+                        }
+                    });
+                }
+            });
+        </script>
 	</body>	
 </html>	

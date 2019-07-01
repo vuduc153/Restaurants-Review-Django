@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser, Review, Restaurant, RestaurantItem, ReviewImage
+from .models import CustomUser, Review, Restaurant, RestaurantItem, ReviewImage, Vote
 from django.forms import ModelForm
 
 
@@ -43,3 +43,11 @@ class ReviewImageForm(ModelForm):
     class Meta:
         model = ReviewImage
         fields = ('image', )
+
+
+class VotingForm(ModelForm):
+
+    class Meta:
+        model = Vote
+        fields = ('vote', )
+

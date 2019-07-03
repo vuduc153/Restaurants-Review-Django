@@ -1,5 +1,6 @@
-from .forms import CustomUserCreationForm, RestaurantItemForm, RestaurantForm, ReviewForm, ReviewImageForm, VotingForm
+from .forms import CustomUserCreationForm, RestaurantItemForm, RestaurantForm, ReviewForm, ReviewImageForm, VotingForm, CommentForm
 from .models import Review, Vote
+from django.core import serializers
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.views.generic.list import ListView
@@ -7,6 +8,8 @@ from django.views.generic import DetailView
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth.decorators import login_required
+from .modelsAI.ModelController import ModelController
 from .utils import get_price_range
 
 
@@ -25,12 +28,16 @@ class IndexView(ListView):
         return context
 
 
+save_query = None
+
+
 class ResultListView(ListView):
 
     context_object_name = "result_list"
     template_name = 'main/listing.html'
 
     def get_queryset(self):
+        global save_query
         # request sent from search bar
         base_query = Review.objects.select_related('restaurant').\
             prefetch_related('restaurant__restaurantitem_set').all()
@@ -41,9 +48,11 @@ class ResultListView(ListView):
                 query2 = base_query.filter(restaurant__name__icontains=self.request.GET.get('keyword')).distinct()
                 query3 = base_query.filter(restaurant__address__icontains=self.request.GET.get('keyword')).distinct()
                 combined_query = query1 | query2 | query3
-                return combined_query
+                save_query = combined_query
+                return combined_query[:3]
             else:  # keyword doesnt have a value
-                return base_query
+                save_query = base_query
+                return base_query[:3]
 
         # request sent from search filter
         elif 'sd[]' in self.request.GET or 'sp[]' in self.request.GET or 'sc[]' in self.request.GET:
@@ -69,11 +78,34 @@ class ResultListView(ListView):
             else:  # no 'sp' is passed
                 query3 = base_query.distinct()
             combined_query = query1 & query2 & query3
-            return combined_query
+            save_query = combined_query
+            return combined_query[:3]
 
         # request sent from search filter with no item selected / invalid request
         else:
-            return base_query
+            save_query = base_query
+            return base_query[:3]
+
+
+def generate_search_results(request):
+
+    if 'offset' in request.GET:
+        offset = int(request.GET.get('offset'))
+        results = save_query[offset:offset+3]
+        result_list = list()
+        for result in results:
+            data = {'id': result.id, 'image_url': result.first_image.image.url, 'rating': result.rating,
+                    'name': result.restaurant.name, 'type': result.restaurant.type,
+                    'address': result.restaurant.address,
+                    'min': result.restaurant.min_price, 'max': result.restaurant.max_price,
+                    'time_open': result.restaurant.time_open, 'time_close': result.restaurant.time_close,
+                    'is_open': result.restaurant.is_open, 'upvotes': result.upvotes,
+                    'comments': result.number_of_comments}
+            result_list.append(data)
+
+        return JsonResponse({'error': False, 'results': result_list})
+
+    return JsonResponse({'error': True})
 
 
 class ReviewDetailView(DetailView):
@@ -87,6 +119,7 @@ class ReviewDetailView(DetailView):
         return super(ReviewDetailView, self).dispatch(*args, **kwargs)
 
 
+@login_required
 def vote(request, review_id):
 
     review = get_object_or_404(Review, id=review_id)
@@ -129,6 +162,24 @@ def vote(request, review_id):
     return JsonResponse({'error': True})
 
 
+@login_required
+def comment(request, review_id):
+
+    review = get_object_or_404(Review, id=review_id)
+    if request.POST.get('reqType') == 'comment':
+        actual_comment = request.POST.get('comment')
+        summary = request.POST.get('summary')
+        comment_form = CommentForm({'summary': summary, 'comment': actual_comment})
+        if comment_form.is_valid():
+            comment_object = comment_form.save(commit=False)
+            comment_object.review = review
+            comment_object.user = request.user
+            comment_object.save()
+            return JsonResponse({'error': False, 'summary': summary, 'comment': actual_comment})
+
+    return JsonResponse({'error': True})
+
+
 def register(request):
 
     if request.method == 'POST':
@@ -145,11 +196,20 @@ def register(request):
     return render(request, 'main/register.html', {'form': form})
 
 
+@login_required
 def post(request):
 
     if request.method == 'POST':
         review_form = ReviewForm(request.POST)
         restaurant_form = RestaurantForm(request.POST)
+        # spam filter
+        review_text = request.POST.get('review')
+        model = ModelController.load_model()
+        processor = ModelController.load_preprocessor()
+        text = processor.transform_vectorize([review_text])
+        if model.predict(text)[0] == 1:  # if review is classified as spam
+            return render(request, 'main/post.html',
+                          {'review_form': review_form, 'restaurant_form': restaurant_form, 'review_error': True})
         # items handling
         item_name = request.POST.getlist('item_name[]')
         item_price = request.POST.getlist('item_price[]')

@@ -566,7 +566,6 @@ nav.navbar.bootsnav ul.nav > li > a:hover,nav.navbar.bootsnav ul.nav > li > a:fo
     -o-transition: all 0.8s ease 0s;
     transition: all 0.8s ease 0s;
     cursor: pointer;
-    margin:
 }
 
 #quick .service_item .container:hover .image {

@@ -1359,18 +1359,13 @@ footer::after {
 .swiper-slide img {
   width: 100%;
   height: auto;
-  max-height: 310px;
+  max-height: 350px;
   object-position: center;
   object-fit: cover;
 }
 
 .disabled {
     pointer-events: none;
-    cursor: not-allowed;
-    opacity: 0.65;
-    filter: alpha(opacity=65);
-    -webkit-box-shadow: none;
-    box-shadow: none;
 }
 
 .customer-review input {

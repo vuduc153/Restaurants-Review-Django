@@ -184,6 +184,9 @@
                             <div class="info-input">
                                 <div class="item-label" style="width: 100%">{{ review_form.review.label }}</div>
                                 {{ review_form.review|add_class:"custom_textarea" }}
+                                {% if review_error %}
+                                <small style="color: red">Please do not spam</small>
+                                {% endif %}
                             </div>
                             <div class="info-input">
                                 <div class="item-label">{{ review_form.rating.label }}</div>

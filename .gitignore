@@ -6,6 +6,7 @@
 *.log
 *.pot
 *.pyc
+data/
 __pycache__/
 images/
 profile_pics/

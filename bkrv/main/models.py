@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
+import datetime
 
 
 class Restaurant(models.Model):
@@ -50,6 +51,10 @@ class Restaurant(models.Model):
             if item.price > _max:
                 _max = item.price
         return format(_max, ',').replace(',', '.')
+
+    @property
+    def is_open(self):
+        return self.time_open <= datetime.datetime.now().time() < self.time_close
 
 
 def profile_picture_path(instance, filename):

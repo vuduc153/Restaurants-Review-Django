@@ -262,15 +262,9 @@
 							<!-- Advanced Search Bar end -->
 							<div class="carousel-caption">
 								<h3>Hedspi Food Review</h3>
-								<h1>Random text</h1>
-								<h1 class="second_heading">Creative & Professional</h1>
-								<a href="
-                                {% if user.is_authenticated %}
-                                {% url 'main:post' %}
-                                {% else %}
-                                {% url 'main:login' %}
-                                {% endif %}
-                                " class="btn know_btn">Write a review</a>
+								<h1>BKRV</h1>
+								<h1 class="second_heading">Free & Open Platform</h1>
+								<a href="{% url 'main:post' %}" class="btn know_btn">Write a review</a>
 							</div>					
 						</div>
 					</div>        
@@ -289,7 +283,9 @@
 					{% for review in recent_list %}
                         <div class="col-md-4">
                             <div class="service_item">
-                                <img src="{{ review.first_image.image.url }}"/>
+                                <div style="height: 250px; width: 100%;">
+                                    <img src="{{ review.first_image.image.url }}" style="height: 100%"/>
+                                </div>
                                 <h3>{{ review.restaurant.name }}</h3>
                                 <p>{{ review.review }}</p>
                                 <a href="{% url 'main:detail' review.id %}" class="btn know_btn">View more</a>
@@ -311,7 +307,9 @@
 					{% for review in popular_list %}
                         <div class="col-md-4">
                             <div class="service_item">
-                                <img src="{{ review.first_image.image.url }}"/>
+                                <div style="height: 250px; width: 100%;">
+                                    <img src="{{ review.first_image.image.url }}" style="height: 100%"/>
+                                </div>
                                 <h3>{{ review.restaurant.name }}</h3>
                                 <p>{{ review.review }}</p>
                                 <a href="{% url 'main:detail' review.id %}" class="btn know_btn">View more</a>

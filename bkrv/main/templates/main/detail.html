@@ -66,9 +66,9 @@
 							<li><a href="{% url 'main:index' %}">Home</a></li>
                             {% if user.is_authenticated %}
                             <li><a href="#">{{ user.username }}</a></li>
-                            <li><a href="{% url 'main:logout' %}">Logout</a></li>
+                            <li><a href="{% url 'main:logout' %}?next={{ request.path }}">Logout</a></li>
                             {% else %}
-							<li><a href="{% url 'main:login' %}">Login</a></li>
+							<li><a href="{% url 'main:login' %}?next={{ request.path }}">Login</a></li>
 							<li><a href="{% url 'main:register' %}">Register</a></li>
                             {% endif %}
 						</ul>
@@ -118,17 +118,42 @@
 	                </div>
 	                <div class="col-md-6">
 	                    <div class="store-seat-block">
-	                        <div class="store-rating">
+	                        {% if object.rating < 4 %}
+                            <div class="store-rating" style="background: red">
+                            {% elif object.rating < 8 %}
+                            <div class="store-rating" style="background: orange">
+                            {% else %}
+                            <div class="store-rating">
+                            {% endif %}
 	                            <span>{{ object.rating }}.0</span>
 	                        </div>
-	                        <div class="upvote-btn">
-	                            <div class="featured-btn-wrap">
-	                                <button class="btn know_btn" name="upvote" style="font-size: 14px" ng-click="vote('upvote')">UPVOTE</button>
-	                            </div>
-	                        </div>
-	                        <div class="downvote-btn">
-	                            <button class="btn btn-outline-danger" name="downvote" style="font-size: 14px" ng-click="vote('downvote')">DOWNVOTE</button>
-	                        </div>
+	                        {% if user.is_authenticated %}
+                                <div class="upvote-btn">
+                                    <div class="featured-btn-wrap">
+                                        <button class="btn know_btn" name="upvote" style="font-size: 14px"
+                                                ng-click="vote('upvote')">UPVOTE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="downvote-btn">
+                                    <button class="btn btn-outline-danger" name="downvote" style="font-size: 14px"
+                                            ng-click="vote('downvote')">DOWNVOTE
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="upvote-btn">
+                                    <div class="featured-btn-wrap">
+                                        <button class="btn know_btn disabled" name="upvote" style="font-size: 14px; background : #C3C3C3; opacity: 1"
+                                                ng-click="vote('upvote')">UPVOTE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="downvote-btn">
+                                    <button class="btn btn-outline-danger disabled" name="downvote" style="font-size: 14px; background : #C3C3C3; opacity: 1"
+                                            ng-click="vote('downvote')">DOWNVOTE
+                                    </button>
+                                </div>
+                            {% endif %}
 	                    </div>
 	                </div>
 	            </div>
@@ -163,7 +188,10 @@
 	                    </div>
 	                    <!-- Comment section -->
 	                    <div class="review-checkbox_wrap mt-4" style="margin-top: 1.5rem!important;">
-	                        <h5 name="no_comments">{{ object.number_of_comments }} {{ object.number_of_comments|pluralize:"comment, comments" }}</h5>
+	                        <h5 name="no_comments" style="margin-bottom: 30px">
+                                <span ng-bind="numberOfComments"></span>
+                                <ng-pluralize count="numberOfComments" when="{'1':'comment', 'other':'comments'}"></ng-pluralize>
+                            </h5>
 	                        {% for comment in object.reviewcomment_set.all %}
                             <hr>
 	                        <div class="customer-review_wrap">
@@ -183,6 +211,33 @@
 	                            </div>
 	                        </div>
                             {% endfor %}
+                            <!-- Dynamically generated comments -->
+                            <div ng-repeat="comment in commentList">
+                                <hr>
+                                <div class="customer-review_wrap">
+                                    <div class="customer-img">
+                                        <img src="{{ user.picture.url }}" class="img-fluid" alt="#"
+                                             name="user_avatar">
+                                        <p name="user_comment">{{ user.username }}</p>
+                                    </div>
+                                    <div class="customer-content-wrap">
+                                        <div class="customer-content">
+                                            <div class="customer-review">
+                                                <h6 name="comment_title">
+                                                    {% verbatim %}
+                                                    {{comment.summary}}
+                                                    {% endverbatim %}
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <p class="customer-text" name="comment_detail">
+                                            {% verbatim %}
+                                            {{comment.comment}}
+                                            {% endverbatim %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 	                    </div>
                         <div class="review-checkbox_wrap mt-4"
                              style="margin-top: 1.5rem!important; padding-bottom: 50px;">
@@ -199,17 +254,17 @@
                                 <div class="customer-content-wrap">
                                     <div class="customer-content">
                                         <div class="customer-review" style="width: 100%">
-                                            <input type="text" name="summary" id="title" required/>
+                                            <input type="text" name="summary" id="summary" required/>
                                         </div>
                                     </div>
                                     <textarea id="actual_comment"
-                                              style="width: 100%; height: 200px; padding: 16px; margin-top: 20px"></textarea>
+                                              style="width: 100%; height: 200px; padding: 16px; margin-top: 20px" required></textarea>
                                 </div>
                             </div>
-                            <button class="comment-submit">Gửi</button>
+                            <button class="comment-submit" ng-click="submitComment()">Submit</button>
                             {% else %}
                             <div class="customer-review_wrap">
-                                <a class="notice_review" href='{% url 'main:login' %}'>Login to write a comment</a>
+                                <a class="notice_review" href='{% url 'main:login' %}?next={{ request.path }}'>Login to write a comment</a>
                             </div>
                             {% endif %}
                         </div>
@@ -227,7 +282,12 @@
 	                        <div class="address">
 	                            <span class="ti-time"></span>
 	                            <p style="margin-bottom: 16px" name="store_opening">{{ object.restaurant.time_open }} - {{ object.restaurant.time_close }}<br>
-	                                <span class="open-now" style="margin-top: 10px">OPEN NOW</span></p> <!-- Based on opening time -->
+	                                {% if object.restaurant.is_open %}
+                                        <span class="open-now" style="margin-top: 20px">OPEN NOW</span>
+                                    {% else %}
+                                        <span class="closed-now" style="margin-top: 20px">CLOSED NOW</span>
+                                    {% endif %}
+                                </p> <!-- Based on opening time -->
 	                        </div>
 	                    </div>
 	                    <div class="follow">
@@ -393,6 +453,24 @@
                         if (!response.data.error) {
                             $scope.upvoteCount = response.data.upvotes;
                             $scope.downvoteCount = response.data.downvotes;
+                        }
+                    });
+                }
+                $scope.numberOfComments = {{ object.number_of_comments }};
+                $scope.commentList = [];
+                $scope.submitComment = function () {
+                    $scope.commentSummary = document.getElementById('summary').value;
+                    $scope.comment = document.getElementById('actual_comment').value;
+                    $http({
+                        method: 'POST',
+                        url: '{% url 'main:comment' object.id %}',
+                        data: $.param({'reqType': 'comment', 'comment': $scope.comment, 'summary': $scope.commentSummary}),
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                    }).then(function (response) {
+                        console.log(response);
+                        if(!response.data.error) {
+                            $scope.commentList.push({'comment': response.data.comment, 'summary': response.data.summary});
+                            $scope.numberOfComments ++;
                         }
                     });
                 }

@@ -28,7 +28,7 @@ class RestaurantForm(ModelForm):
 
     class Meta:
         model = Restaurant
-        fields = ('name', 'address', 'time_open', 'time_close', 'type', 'district')
+        fields = ('name', 'address', 'time_open', 'time_close', 'type')
 
 
 class RestaurantItemForm(ModelForm):

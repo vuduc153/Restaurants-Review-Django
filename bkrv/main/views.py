@@ -1,6 +1,5 @@
 from .forms import CustomUserCreationForm, RestaurantItemForm, RestaurantForm, ReviewForm, ReviewImageForm, VotingForm, CommentForm
 from .models import Review, Vote
-from django.core import serializers
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.views.generic.list import ListView
@@ -56,11 +55,6 @@ class ResultListView(ListView):
 
         # request sent from search filter
         elif 'sd[]' in self.request.GET or 'sp[]' in self.request.GET or 'sc[]' in self.request.GET:
-            # area-based query
-            if self.request.GET.getlist('sd[]'):
-                query1 = base_query.filter(restaurant__district__in=self.request.GET.getlist('sd[]')).distinct()
-            else:  # no 'sd' is passed
-                query1 = base_query.distinct()
             # type-based query
             if self.request.GET.getlist('sc[]'):
                 query2 = base_query.filter(restaurant__type__in=self.request.GET.getlist('sc[]')).distinct()
@@ -77,7 +71,7 @@ class ResultListView(ListView):
                 query3 = stack_query
             else:  # no 'sp' is passed
                 query3 = base_query.distinct()
-            combined_query = query1 & query2 & query3
+            combined_query = query2 & query3
             save_query = combined_query
             return combined_query[:3]
 

@@ -1,12 +1,13 @@
 def get_price_range(range):
     range = range.replace('.', '')
+    range = range.replace('$', '')
     price_range = dict()
     if range[0] == '<':
         price_range['low'] = 0
         price_range['high'] = int(range.split('<')[1])
     elif range[0] == '>':
         price_range['low'] = int(range.split('>')[1])
-        price_range['high'] = 10000000
+        price_range['high'] = 10000
     else:
         price_range['low'] = int(range.split('-')[0])
         price_range['high'] = int(range.split('-')[1])

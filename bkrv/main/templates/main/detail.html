@@ -103,7 +103,7 @@
 	                    <h5 name="store_name">{{ object.restaurant.name }}</h5>
 	                    <p><span>$$$</span>$$</p> <!-- Based on price range -->
 	                    <p class="store-description" style="display: block;">
-                            <span class="store-description-type" name="store_type">{{ object.restaurant.type }}</span>
+                            <span class="store-description-type" name="store_type">{{ object.restaurant.type }}    </span>
 
                             <span class="store-description" style="display: inline-block; color: #b2b8c3">
 	                    		<span name="no_upvotes"
@@ -168,10 +168,10 @@
 	                <div class="col-md-8 responsive-wrap">
 	                    <div class="review-checkbox_wrap">
 	                        <div class="review-checkbox" name="review_detail">
-	                            <p>{{ object.review }}</p>
+	                            <p>{{ object.review|linebreaks }}</p>
 	                            <hr>
 	                        </div>
-	                        <div class="row">
+	                        <div class="row"> cccc
                                 {% for item in object.restaurant.restaurantitem_set.all %}
 	                            <div class="col-md-4">
 	                                <label class="custom-checkbox" style="width: 100%;">
@@ -180,7 +180,7 @@
 			                      	</label>
 				                    <label class="custom-checkbox">
 					                    <span class="fa fa-tag minmaxpriceicon"></span>
-					                    <span class="custom-control-description" name="store_menu_price">{{ item.price }}đ</span>
+					                    <span class="custom-control-description" name="store_menu_price">${{ item.price }}</span>
 				                    </label> 
 	                 			</div>
                                 {% endfor %}
@@ -243,7 +243,7 @@
                              style="margin-top: 1.5rem!important; padding-bottom: 50px;">
                             <h5>Leave a comment</h5>
                             <hr>
-                            <!-- Actual Comments -->
+                            <!-- User Comment Section -->
                             {% if user.is_authenticated %}
                             <div class="customer-review_wrap">
                                 <div class="customer-img">
@@ -277,7 +277,7 @@
 	                        </div>
 	                        <div class="address">
 	                            <span class="fa fa-tag minmaxpriceicon"></span>
-	                            <p name="store_pricerange">{{ object.restaurant.min_price }}đ - {{ object.restaurant.max_price }}đ</p>
+	                            <p name="store_pricerange">${{ object.restaurant.min_price }} - ${{ object.restaurant.max_price }}</p>
 	                        </div>
 	                        <div class="address">
 	                            <span class="ti-time"></span>
@@ -323,10 +323,11 @@
 				<div class="row">
 					<div class="col-lg-4 col-sm-7">
 						<div class="footer_item">
-							<h4>About Company</h4>
+							<h4>About</h4>
 							<img class="logo" src="{% static 'main/images/logo.png' %}" style="width: 200px; height: 50px" />
-							<p>Sản phẩm là quá trình sản sinh tri thức một cách khách quan và tự nguyện của một nhóm bạn trẻ SDL Đại Học Bách Khoa Hà Nội. Lấy ý tưởng từ phần mềm diệt virus BKAV, BKRV ra đời nhằm mục đích quảng bá món ăn Việt Nam đến với bạn bè Thế Giới.</p>
-
+							<p>This website serves no other purposes than education.<br>The source code for the project can be found at<br>
+                                https://github.com/vuduc153/Restaurants-Review-Django
+                            </p>
 							<ul class="list-inline footer_social_icon">
 								<li><a href=""><span class="fa fa-facebook"></span></a></li>
 								<li><a href=""><span class="fa fa-twitter"></span></a></li>
@@ -348,7 +349,6 @@
 								<li><a href="https://www.facebook.com/The.ThanosMadTitan"><span class="fa fa-play"></span> Thanos</a>
 								<li><a href="https://www.facebook.com/vuduc153"><span class="fa fa-play"></span> Spider MAN</a>
 								<li><a href="https://www.facebook.com/hedspi.nichibu/"><span class="fa fa-play"></span> Hedspi Nichibu</a>
-								<li><a href="https://www.facebook.com/JAV-Company-233850186650513/"><span class="fa fa-play"></span> JAV Company</a>
 							</ul>
 						</div>
 					</div>
@@ -359,7 +359,6 @@
 								<li><a href=""><span class="date">03 <small>MBR</small></span>  Project made by SDL Team<br/>with 3 members</a></li>
 								<li><a href=""><span class="date">02 <small>WRK</small></span>  Number of people really doing this project</a></li>
 								<li><a href=""><span class="date">01 <small>TER</small></span>  Takes 1 month of implementation</a></li>
-								<li><a href=""><span class="date">10 <small>DIM</small></span><b>  Số điểm mà nhóm mong muốn có được</b></a></li>
 							</ul>
 						</div>
 					</div>

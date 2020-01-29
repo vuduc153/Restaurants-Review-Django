@@ -1,9 +1,9 @@
-# Django - AngularJS Web Application
+# BKRV
 
 ## About
-An online platform that allows users to freely share their experience and opinion about restaurants all around the world with the community.
+Our aim was to create an online platform that allows users to freely share their experience and opinion about restaurants all around the world with the community.
 
-Built on Django framework.
+A web application built on Django / AngularJS framework.
 
 ## Setup
 Create a new virtual environment with:

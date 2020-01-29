@@ -3,7 +3,7 @@
 ## About
 Our aim was to create an online platform that allows users to freely share their experience and opinion about restaurants all around the world with the community.
 
-An MVC web application built with Django / AngularJS framework.
+An web application built with Django / AngularJS framework.
 
 The source code for the entire project is available in this repository. 
 

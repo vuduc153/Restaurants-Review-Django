@@ -5,6 +5,8 @@ Our aim was to create an online platform that allows users to freely share their
 
 A web application built on Django / AngularJS framework.
 
+The source code for the entire project is available in this repository. 
+
 ## Setup
 Create a new virtual environment with:
 ```
@@ -23,3 +25,8 @@ Change the `DATABASES = { ... }` in ```settings.py``` to match your local databa
 Run ```python3 manage.py runserver``` on terminal to launch your server.
 
 Then, run ```python3 manage.py migrate``` to set up your database.
+
+## Deployment
+The first version of the application is powered by Heroku Cloud Application platform:
+
+http://bkrv.herokuapp.com/

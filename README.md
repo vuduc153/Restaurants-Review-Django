@@ -3,9 +3,13 @@
 ## About
 Our aim was to create an online platform that allows users to freely share their experience and opinion about restaurants all around the world with the community.
 
-A web application built on Django / AngularJS framework.
+A web application built with Django / AngularJS framework.
 
 The source code for the entire project is available in this repository. 
+
+Another version of the project built with PHP is also available at:
+
+https://github.com/vuduc153/IT3290
 
 ## Setup
 Create a new virtual environment with:

@@ -26,7 +26,7 @@ SECRET_KEY = '0zh7)c1)-j^2eyit5i2p&qhqfqi9o-2%%cedt*y*ixw#&^lhnf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['bkrv.herokuapp.com']
+ALLOWED_HOSTS = ['bkrv.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.gzip.GZipMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

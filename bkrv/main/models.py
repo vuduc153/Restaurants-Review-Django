@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
+from PIL import Image
+import os
 
 
 class Restaurant(models.Model):
@@ -91,6 +93,26 @@ def review_image_path(instance, filename):
 class ReviewImage(models.Model):
     image = models.ImageField(upload_to=review_image_path)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super().save()
+        image = Image.open(self.image.path)
+        image.thumbnail((768, 768))
+        image_path = os.path.splitext(self.image.path)[0] + '-768' + os.path.splitext(self.image.path)[1]
+        image.save(image_path)
+        image = Image.open(self.image.path)
+        image.thumbnail((384, 384))
+        image_path = os.path.splitext(self.image.path)[0] + '-384' + os.path.splitext(self.image.path)[1]
+        image.save(image_path)
+
+    @property
+    def photo768(self):
+        return os.path.splitext(self.image.url)[0] + '-768' + os.path.splitext(self.image.url)[1]
+
+    @property
+    def photo384(self):
+        return os.path.splitext(self.image.url)[0] + '-384' + os.path.splitext(self.image.url)[1]
 
 
 class RestaurantItem(models.Model):

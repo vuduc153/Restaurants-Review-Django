@@ -17,6 +17,7 @@
 		<link rel="stylesheet" href="{% static 'main/css/listing-detail.css' %}" />
 		<!-- AngularJS -->
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-animate.js"></script>
 		<!-- Simple line Icon -->
 	    <link rel="stylesheet" href="{% static 'main/css/simple-line-icons.css' %}">
 	    <!-- Themify Icon -->
@@ -81,8 +82,9 @@
 				<!-- Carousel-inner -->
 				<div class="carousel-inner" role="listbox">
 					<div class="item active">
-						<img src="{% static 'main/images/listing-food.jpg' %}">
-						<div class="overlay">
+						<div class="center-cropped" style="background-image: url('{% static 'main/images/listing-food.jpg' %}')">
+                        </div>
+                        <div class="overlay">
 							<form method="GET" action="{% url 'main:search' %}">
 								<div class="inner-form">
 									<div class="input-field first-wrap">
@@ -95,7 +97,7 @@
 								</div>
 							</form>
 							<!-- Advanced Search Bar -->
-							<div class="advance-search unselectable" ng-init="type='area'" ng-hide="show!='true'">
+							<div class="advance-search unselectable dropin dropout" ng-init="type='price'" ng-hide="show!='true'">
 								<div class="sf-left">
 									<ul class="sf-cate">
 										<li ng-click="changeType('price')">
@@ -149,11 +151,14 @@
 						</div>
 					</div>
 				</div><!-- Carousel-inner end -->
+                <a href="#main-block" class="scrolldown"><span></span>
+                    Scroll
+                </a>
 			</div><!-- Carousel end-->
 		</section>
 
 		<!--============================= FEATURED PLACES =============================-->
-	    <section class="main-block">
+	    <section id="main-block" class="main-block" style="background-image: url('{% static 'main/images/background.jpg' %}')">
 	        <div class="container">
 	            <div class="row justify-content-center">
 	                <div class="col-md-5">
@@ -174,7 +179,25 @@
 	                                            featured-rating
                                                 {% elif object.rating < 8 %}
                                                 featured-rating-orange
-                                                {% else %}
+                                                {% else %}.dropin.ng-hide-add {
+  transform: rotateZ(0);
+  transform-origin: right;
+  transition: all 0.5s ease-in-out;
+}
+
+.dropin.ng-hide-add.ng-hide-add-active {
+  transform: rotateZ(-135deg);
+}
+
+.dropin.ng-hide-remove {
+  transform: rotateY(90deg);
+  transform-origin: left;
+  transition: all 0.5s ease;
+}
+
+.dropin.ng-hide-remove.ng-hide-remove-active {
+  transform: rotateY(0);
+}
                                                 featured-rating-green
                                                 {% endif %}">{{ object.rating }}</span>
 	                            <div class="featured-title-box">
@@ -283,41 +306,6 @@
 							</ul>
 						</div>
 					</div>
-					<div class="col-lg-2 col-sm-5">
-						<div class="footer_item">
-							<h4>Sponsers</h4>
-							<ul class="list-unstyled footer_menu">
-								<li><a href="https://www.facebook.com/cafetrasuathayphuong/"><span class="fa fa-play"></span> Citea FUN</a>
-								<li><a href="https://www.facebook.com/chienhedspi"><span class="fa fa-play"></span> TSCBSM Group</a>
-								<li><a href="https://www.facebook.com/vingroup.net/"><span class="fa fa-play"></span> Vin Group</a>
-								<li><a href="https://www.foody.vn/ha-noi"><span class="fa fa-play"></span> Foody.vn</a>
-								<li><a href="https://lala.vn/"><span class="fa fa-play"></span> LALA</a>
-								<li><a href="https://www.facebook.com/The.ThanosMadTitan"><span class="fa fa-play"></span> Thanos</a>
-								<li><a href="https://www.facebook.com/vuduc153"><span class="fa fa-play"></span> Spider MAN</a>
-								<li><a href="https://www.facebook.com/hedspi.nichibu/"><span class="fa fa-play"></span> Hedspi Nichibu</a>
-							</ul>
-						</div>
-					</div>
-					<div class="col-lg-3 col-sm-7">
-						<div class="footer_item">
-							<h4>Don't read the lines below</h4>
-							<ul class="list-unstyled post">
-								<li><a href=""><span class="date">03 <small>MBR</small></span>  Project made by SDL Team<br/>with 3 members</a></li>
-								<li><a href=""><span class="date">02 <small>WRK</small></span>  Number of people really doing this project</a></li>
-								<li><a href=""><span class="date">01 <small>TER</small></span>  Takes 1 month of implementation</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-lg-3 col-sm-5">
-						<div class="footer_item">
-							<h4>Come with us</h4>
-							<ul class="list-unstyled footer_contact">
-								<li><a href=""><span class="fa fa-map-marker"></span> 17 Ta Quang Buu , HBC HN VN</a></li>
-								<li><a href=""><span class="fa fa-envelope"></span> Email.Never.Read@gmail.com</a></li>
-								<li><a href=""><span class="fa fa-mobile"></span><p>+84 24 66 711 211 <br />+84 69 96 069 069</p></a></li>
-							</ul>
-						</div>
-					</div>
 				</div>
 			</div><!-- Footer top end -->
 
@@ -346,7 +334,7 @@
 
 		<script src="{% static 'main/js/main.js' %}"></script>
         <script>
-            var app = angular.module('myApp', []);
+            var app = angular.module('myApp', ['ngAnimate']);
             app.controller('myCtrl', function ($scope, $http) {
                 $scope.offset = 3;
                 $scope.Prices = [{

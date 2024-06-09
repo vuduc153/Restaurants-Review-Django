@@ -29,8 +29,3 @@ Change the `DATABASES = { ... }` in ```settings.py``` to match your local databa
 Run ```python3 manage.py runserver``` on terminal to launch your server.
 
 Then, run ```python3 manage.py migrate``` to set up your database.
-
-## Deployment
-The first version of the application is powered by Heroku Cloud Application platform:
-
-http://bkrv.herokuapp.com/
